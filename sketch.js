@@ -1,15 +1,15 @@
-let canvas, circles;
+let canvas, items;
 
-let PerformanceCircle
-let SpatialSongwritingPromptsCircle
-let InterfacesCircle
-let SoundScoresPublicationCircle
-let ProcessCircle
-let SweetSpotCircle
-let AgencyCircle
-let SonicSpaceCircle
-let TechnoVoiceCircle
-let InspirationCircle
+let PerformancePageItem
+let SpatialSongwritingPromptsPageItem
+let InterfacesPageItem
+let SoundScoresPublicationPageItem
+let ProcessPageItem
+let SweetSpotPageItem
+let AgencyPageItem
+let SonicSpacePageItem
+let TechnoVoicePageItem
+let InspirationPageItem
 
 const controls = {
   view: { x: 0, y: 0, zoom: 1 },
@@ -47,174 +47,31 @@ const itemStyles = {
   Output: { color: '#3351b0' }
 }
 
-const circleItems = {
-  Performance: {
-    title: 'Performance',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512949',
-    style: itemStyles.Output,
-    soundURL: 'sounds/test-tone-6.mp3',
-    sound: undefined,
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitRight,
-    pathScale: 60,
-    pathSpeed: .00005,
-    pathOffset: 0,
-  },
-  SpatialSongwritingPrompts: {
-    title: 'Spatial Songwriting Prompts',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512952',
-    style: itemStyles.Output,
-    soundURL: 'sounds/test-tone-5.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitRight,
-    pathScale: 60,
-    pathSpeed: .00005,
-    pathOffset: Math.PI / 2,
-  },
-  Interfaces: {
-    title: 'Interfaces',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512958',
-    style: itemStyles.Output,
-    soundURL: 'sounds/test-tone-8.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitRight,
-    pathScale: 60,
-    pathSpeed: .00005,
-    pathOffset: Math.PI,
-  },
-  SoundScoresPublication: {
-    title: 'Sound Scores Publication',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512955',
-    style: itemStyles.Output,
-    soundURL: 'sounds/test-tone-7.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitRight,
-    pathOffset: Math.PI,
-    pathScale: 60,
-    pathSpeed: .00005,
-    pathOffset: Math.PI * 1.5,
-  },
-  Process: {
-    title: 'Process',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512975',
-    style: itemStyles.Process,
-    soundURL: 'sounds/test-tone-10.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.roseLeft,
-    pathScale: 250,
-    pathSpeed: .0001,
-    pathOffset: Math.PI / 2,
-  },
-  SweetSpot: {
-    title: 'Sweet Spot',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512964',
-    style: itemStyles.Thought,
-    soundURL: 'sounds/test-tone-9.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitLeft,
-    pathScale: 200,
-    pathSpeed: .00002,
-    pathOffset: Math.PI / 2,
-  },
-  Agency: {
-    title: 'Agency',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512967',
-    style: itemStyles.Thought,
-    soundURL: 'sounds/test-tone-4.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitRight,
-    pathScale: 250,
-    pathSpeed: .0001,
-    pathOffset: -Math.PI / 2,
-  },
-  SonicSpace: {
-    title: 'Sonic / Space',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512971',
-    style: itemStyles.Thought,
-    soundURL: 'sounds/test-tone-3.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitLeft,
-    pathScale: 150,
-    pathSpeed: .00007,
-    pathOffset: Math.PI,
-  },
-  TechnoVoice: {
-    title: 'Techno Voice',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512961',
-    style: itemStyles.Thought,
-    soundURL: 'sounds/test-tone-2.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitLeft,
-    pathScale: 100,
-    pathSpeed: .00007,
-    pathOffset: 0,
-  },
-  Inspiration: {
-    title: 'Inspiration',
-    link: 'https://www.researchcatalogue.net/view/3512750/3512978',
-    style: itemStyles.Inspiration,
-    soundURL: 'sounds/test-tone-1.mp3',
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    pointRadius: 10,
-    soundRadius: 100,
-    path: paths.orbitRight,
-    pathScale: 325,
-    pathSpeed: .00002,
-    pathOffset: 0,
-  },
-}
+
 
 function preload() {
 
-  circleItems.Performance.sound = loadSound(circleItems.Performance.soundURL);
-  circleItems.SpatialSongwritingPrompts.sound = loadSound(circleItems.SpatialSongwritingPrompts.soundURL);
-  circleItems.Interfaces.sound = loadSound(circleItems.Interfaces.soundURL);
-  circleItems.SoundScoresPublication.sound = loadSound(circleItems.SoundScoresPublication.soundURL);
-  circleItems.Process.sound = loadSound(circleItems.Process.soundURL);
-  circleItems.SweetSpot.sound = loadSound(circleItems.SweetSpot.soundURL);
-  circleItems.Agency.sound = loadSound(circleItems.Agency.soundURL);
-  circleItems.SonicSpace.sound = loadSound(circleItems.SonicSpace.soundURL);
-  circleItems.TechnoVoice.sound = loadSound(circleItems.TechnoVoice.soundURL);
-  circleItems.Inspiration.sound = loadSound(circleItems.Inspiration.soundURL);
+  pageItems.Performance.sound = loadSound(pageItems.Performance.soundURL);
+  pageItems.SpatialSongwritingPrompts.sound = loadSound(pageItems.SpatialSongwritingPrompts.soundURL);
+  pageItems.Interfaces.sound = loadSound(pageItems.Interfaces.soundURL);
+  pageItems.SoundScoresPublication.sound = loadSound(pageItems.SoundScoresPublication.soundURL);
+  pageItems.Process.sound = loadSound(pageItems.Process.soundURL);
+  pageItems.SweetSpot.sound = loadSound(pageItems.SweetSpot.soundURL);
+  pageItems.Agency.sound = loadSound(pageItems.Agency.soundURL);
+  pageItems.SonicSpace.sound = loadSound(pageItems.SonicSpace.soundURL);
+  pageItems.TechnoVoice.sound = loadSound(pageItems.TechnoVoice.soundURL);
+  pageItems.Inspiration.sound = loadSound(pageItems.Inspiration.soundURL);
 
-  PerformanceCircle = new Circle(circleItems.Performance)
-  SpatialSongwritingPromptsCircle = new Circle(circleItems.SpatialSongwritingPrompts)
-  InterfacesCircle = new Circle(circleItems.Interfaces)
-  SoundScoresPublicationCircle = new Circle(circleItems.SoundScoresPublication)
-  ProcessCircle = new Circle(circleItems.Process)
-  SweetSpotCircle = new Circle(circleItems.SweetSpot)
-  AgencyCircle = new Circle(circleItems.Agency)
-  SonicSpaceCircle = new Circle(circleItems.SonicSpace)
-  TechnoVoiceCircle = new Circle(circleItems.TechnoVoice)
-  InspirationCircle = new Circle(circleItems.Inspiration)
+  PerformancePageItem = new PageItem(pageItems.Performance)
+  SpatialSongwritingPromptsPageItem = new PageItem(pageItems.SpatialSongwritingPrompts)
+  InterfacesPageItem = new PageItem(pageItems.Interfaces)
+  SoundScoresPublicationPageItem = new PageItem(pageItems.SoundScoresPublication)
+  ProcessPageItem = new PageItem(pageItems.Process)
+  SweetSpotPageItem = new PageItem(pageItems.SweetSpot)
+  AgencyPageItem = new PageItem(pageItems.Agency)
+  SonicSpacePageItem = new PageItem(pageItems.SonicSpace)
+  TechnoVoicePageItem = new PageItem(pageItems.TechnoVoice)
+  InspirationPageItem = new PageItem(pageItems.Inspiration)
 
 }
 
@@ -223,22 +80,22 @@ function setup() {
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
 
-  circles = [PerformanceCircle,
-    SpatialSongwritingPromptsCircle,
-    InterfacesCircle,
-    SoundScoresPublicationCircle,
-    ProcessCircle,
-    SweetSpotCircle,
-    AgencyCircle,
-    SonicSpaceCircle,
-    TechnoVoiceCircle,
-    InspirationCircle]
+  items = [PerformancePageItem,
+    SpatialSongwritingPromptsPageItem,
+    InterfacesPageItem,
+    SoundScoresPublicationPageItem,
+    ProcessPageItem,
+    SweetSpotPageItem,
+    AgencyPageItem,
+    SonicSpacePageItem,
+    TechnoVoicePageItem,
+    InspirationPageItem]
 
-  circles.forEach(circle => {
-    circle.loop();
+  items.forEach(pageItem => {
+    pageItem.loop();
   })
 
-  canvas.mouseWheel(e => Controls.zoom(controls).worldZoom(e, circles))
+  canvas.mouseWheel(e => Controls.zoom(controls).worldZoom(e, items))
 
 }
 
@@ -265,29 +122,29 @@ function draw() {
   ellipse(cursorx, cursory, 15, 15)
 
   if (cursorOnCanvas) {
-    circles.forEach(circle => {
-      circle.updateAudio();
+    items.forEach(pageItem => {
+      pageItem.updateAudio();
     });
   }
 
-  circles.forEach(circle => {
-    circle.draw()
+  items.forEach(pageItem => {
+    pageItem.draw()
   });
 }
 
 function handleCursorExit() {
   cursorOnCanvas = false;
-  circles.forEach(circle => {
-    circle.fadeOut();
+  items.forEach(pageItem => {
+    pageItem.fadeOut();
   });
 }
 
-window.mouseClicked = e => circles.forEach(circle => {
-  circle.playAudio()
-  circle.clicked(e)
+window.mouseClicked = e => items.forEach(pageItem => {
+  pageItem.playAudio()
+  pageItem.clicked(e)
 });
 window.mousePressed = e => Controls.move(controls).mousePressed(e)
-window.mouseDragged = e => Controls.move(controls).mouseDragged(e, circles);
+window.mouseDragged = e => Controls.move(controls).mouseDragged(e, items);
 window.mouseReleased = e => Controls.move(controls).mouseReleased(e)
 
 class Controls {
@@ -298,7 +155,7 @@ class Controls {
       controls.viewPos.prevY = e.clientY;
     }
 
-    function mouseDragged(e, circlesToUpdate) {
+    function mouseDragged(e, pageItemsToUpdate) {
       const { prevX, prevY, isDragging } = controls.viewPos;
       if (!isDragging) return;
 
@@ -311,8 +168,8 @@ class Controls {
         controls.view.y += dy;
         controls.viewPos.prevX = pos.x, controls.viewPos.prevY = pos.y
 
-        circlesToUpdate.forEach(circle => {
-          circle.offsetPhantomPos(dx, dy)
+        pageItemsToUpdate.forEach(pageItem => {
+          pageItem.offsetPhantomPos(dx, dy)
         })
       }
     }
@@ -338,7 +195,7 @@ class Controls {
     }
 
 
-    function worldZoom(e, circlesToUpdate) {
+    function worldZoom(e, pageItemsToUpdate) {
       const { x, y, deltaY } = e;
       const direction = deltaY > 0 ? -1 : 1;
       const factor = 0.05;
@@ -353,13 +210,13 @@ class Controls {
         // controls.view.y -= wy * height * zoom;
         // controls.view.zoom += zoom;
 
-        circlesToUpdate.forEach(circle => {
-          // let { x, y } = calcPos(circle.x, circle.y, zoom);
+        pageItemsToUpdate.forEach(pageItem => {
+          // let { x, y } = calcPos(pageItem.x, pageItem.y, zoom);
           // console.log(x, y);
           // console.log(mouseX, mouseY);
-          // circle.offsetPhantomPos(x - circle.x, y - circle.y);
+          // pageItem.offsetPhantomPos(x - pageItem.x, y - pageItem.y);
           // console.log(zoom)
-          // circle.soundRadius
+          // pageItem.soundRadius
         })
       }
 
@@ -370,7 +227,7 @@ class Controls {
 }
 
 
-class Circle {
+class PageItem {
   constructor(props) {
     this.title = props.title;
     this.link = props.link;
