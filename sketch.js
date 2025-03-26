@@ -255,7 +255,9 @@ function draw() {
   let dy = targetY - cursory;
   cursory += dy * 0.15;
 
-  if ((dx > .1 || dy > .1) && !cursorOnCanvas) {
+
+  // check if cursor is active with position delta,
+  if ((abs(dx) > 1 || abs(dy) > 1) && !cursorOnCanvas) {
     cursorOnCanvas = true;
   }
 
@@ -478,9 +480,8 @@ class Circle {
   clicked(e) {
     let d = dist(e.clientX, e.clientY, this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY);
     if (d < this.pointRadius * 2) {
-      window.open(this.link);
-      this.sound.setVolume(0, 1);
       handleCursorExit();
+      window.open(this.link);
     }
   }
 }
