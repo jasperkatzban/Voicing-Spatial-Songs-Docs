@@ -387,8 +387,6 @@ class Circle {
     this.pathScale = props.pathScale;
     this.pathSpeed = props.pathSpeed;
     this.pathOffset = props.pathOffset;
-
-    this.volume = 0.0;
   }
 
   updatePos() {
@@ -444,7 +442,8 @@ class Circle {
 
   playAudio() {
     if (!this.sound.isPlaying()) {
-      this.sound.play()
+      this.sound.setVolume(0);
+      this.sound.play();
     }
   }
 
@@ -458,7 +457,6 @@ class Circle {
     d = constrain(d, 0, this.phantomSoundRadius);
     let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
     let a = float(aInt) / 100.0;
-    this.volume = a;
     this.sound.setVolume(a, .1);
   }
 
@@ -470,7 +468,6 @@ class Circle {
 
   fadeOut() {
     this.sound.setVolume(0, 1.0);
-    this.volume = 0;
   }
 
   offsetPhantomPos(dx, dy) {
