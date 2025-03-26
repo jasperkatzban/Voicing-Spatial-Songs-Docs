@@ -52,6 +52,8 @@ const itemStyles = {
 function preload() {
 
   pageItems.Performance.sound = loadSound(pageItems.Performance.soundURL);
+  pageItems.Performance.image = loadImage(pageItems.Performance.imageUrl);
+
   pageItems.SpatialSongwritingPrompts.sound = loadSound(pageItems.SpatialSongwritingPrompts.soundURL);
   pageItems.Interfaces.sound = loadSound(pageItems.Interfaces.soundURL);
   pageItems.SoundScoresPublication.sound = loadSound(pageItems.SoundScoresPublication.soundURL);
@@ -118,9 +120,6 @@ function draw() {
     cursorOnCanvas = true;
   }
 
-  fill(255, 255, 255, .5)
-  ellipse(cursorx, cursory, 15, 15)
-
   if (cursorOnCanvas) {
     items.forEach(pageItem => {
       pageItem.updateAudio();
@@ -130,6 +129,10 @@ function draw() {
   items.forEach(pageItem => {
     pageItem.draw()
   });
+
+  // draw cursor
+  fill(255, 255, 255, .5)
+  ellipse(cursorx, cursory, 15, 15)
 }
 
 function handleCursorExit() {
@@ -242,6 +245,7 @@ class PageItem {
     this.soundRadius = props.soundRadius;
     this.phantomSoundRadius = props.soundRadius;
     this.sound = props.sound;
+    this.image = props.image;
     this.path = props.path;
     this.pathScale = props.pathScale;
     this.pathSpeed = props.pathSpeed;
@@ -261,6 +265,17 @@ class PageItem {
     let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorx, cursory);
     d = constrain(d, 0, this.soundRadius);
     let hoverPointRadius = map(d, 0, this.soundRadius, this.soundRadius / 2, this.pointRadius);
+
+    if (this.image) {
+      imageMode(CENTER)
+      let imageX = this.drawnX;
+      let imageY = this.drawnY - 50 - this.pointRadius * 2;
+      let dForImage = constrain(d, this.pointRadius, this.pointRadius * 3)
+      let a = map(dForImage, this.pointRadius, this.pointRadius * 3, .6, 0)
+      tint(256, 256, 256, a);
+      // TODO: fix positioning of different image sizes
+      image(this.image, imageX, imageY, 100, 100, 0, 0, this.image.width, this.image.height, COVER);
+    }
 
     let hoverColor = color(this.style.color);
     hoverColor.setAlpha(.1);
@@ -284,15 +299,14 @@ class PageItem {
     stroke(soundRadiusColor);
     ellipse(this.drawnX, this.drawnY, this.soundRadius * 2, this.soundRadius * 2);
 
-
     if (d < this.pointRadius * 2) {
       fill(255, 255, 255, .6)
       ellipse(this.drawnX, this.drawnY, this.pointRadius * 1, this.pointRadius * 1);
       noStroke();
       text(this.title, this.drawnX, this.drawnY + this.pointRadius + 20);
     }
-
   }
+
 
   loop() {
     this.sound.setLoop(true);

@@ -4,6 +4,7 @@ const pageItems = {
         link: 'https://www.researchcatalogue.net/view/3512750/3512949',
         style: itemStyles.Output,
         soundURL: 'sounds/test-tone-6.mp3',
+        imageUrl: 'images/test.png',
         x: window.innerWidth / 2,
         y: window.innerHeight / 2,
         pointRadius: 10,
