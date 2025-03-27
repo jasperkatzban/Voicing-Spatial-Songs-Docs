@@ -258,7 +258,7 @@ class NavigationItem {
 
         // TODO: wait until state change has occured to show / log trails
         this.trail.push({ x: this.x, y: this.y })
-        if (this.trail.length > 2000) {
+        if (this.trail.length > 1000) {
           this.trail.splice(0, 1);
         }
         break;
@@ -427,7 +427,7 @@ class LinkItem extends NavigationItem {
   async openLinkAfterDelay(link) {
     await new Promise(() => {
       setTimeout(() => {
-        window.open(link)
+        window.open(link, '_self');
       }, 1000);
     });
   }
