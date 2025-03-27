@@ -1,37 +1,39 @@
-let canvas;
+let canvas, canvasCenter;
 
-const items = new Map();
+const navigationItems = new Map();
 
 const controls = {
   view: { x: 0, y: 0, zoom: 1 },
   viewPos: { prevX: null, prevY: null, isDragging: false },
 }
 
-let cursorx = 1;
-let cursory = 1;
+let cursorX = 1;
+let cursorY = 1;
 let cursorOnCanvas = true;
 
 const paths = {
   orbitLeft: (scale, speed, offset) => {
     let x = scale * sin(millis() * speed + offset);
     let y = scale * cos(millis() * speed + offset);
-    return { x, y };
+    let t = millis() * speed + offset
+    return { x, y, t };
   },
   orbitRight: (scale, speed, offset) => {
     let x = scale * sin(-millis() * speed + offset);
     let y = scale * cos(-millis() * speed + offset);
-    return { x, y };
+    let t = -millis() * speed + offset
+    return { x, y, t };
   },
   roseLeft: (scale, speed, offset) => {
     let r = scale * sin(millis() * speed);
     let t = millis() * speed / 3 + offset;
     let x = r * sin(t);
     let y = r * cos(t);
-    return { x, y };
+    return { x, y, t };
   },
 }
 
-const itemStyles = {
+const navigationItemStyles = {
   Inspiration: { color: '#22e6a1' },
   Thought: { color: '#aa34e0' },
   Process: { color: '#f5b40f' },
@@ -39,39 +41,52 @@ const itemStyles = {
 }
 
 function preload() {
-  pageItems.forEach(pageItem => {
-    pageItem.sound = loadSound(pageItem.soundURL);
-    if (pageItem.imageUrl !== undefined) {
-      pageItem.image = loadImage(pageItem.imageUrl);
+  navigationItemProps.forEach(navigationItem => {
+    navigationItem.sound = loadSound(navigationItem.soundURL);
+    if (navigationItem.imageUrl !== undefined) {
+      navigationItem.image = loadImage(navigationItem.imageUrl);
     }
-    items.set(pageItem.title, new PageItem(pageItem))
+    switch (navigationItem.type) {
+      case "group":
+        navigationItems.set(navigationItem.title, new GroupItem(navigationItem))
+        break;
+      case "link":
+        navigationItems.set(navigationItem.title, new LinkItem(navigationItem))
+        break;
+      case "subItem":
+        let subItem = new LinkItem(navigationItem)
+        subItem.navigationState = 'hidden'
+        navigationItems.set(navigationItem.title, subItem)
+
+      // TODO: handle default case
+      default:
+        break;
+    }
   })
 }
 
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
+  canvasCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
 
-  items.forEach(pageItem => {
-    pageItem.loop();
+  navigationItems.forEach(navigationItem => {
+    navigationItem.loop();
   })
 
-  canvas.mouseWheel(e => Controls.zoom(controls).worldZoom(e, items))
 }
 
 function draw() {
   background(30)
-  translate(controls.view.x, controls.view.y);
-  scale(controls.view.zoom)
 
   let targetX = mouseX;
-  let dx = targetX - cursorx;
-  cursorx += dx * 0.15;
+  let dx = targetX - cursorX;
+  cursorX += dx * 0.3;
 
   let targetY = mouseY;
-  let dy = targetY - cursory;
-  cursory += dy * 0.15;
+  let dy = targetY - cursorY;
+  cursorY += dy * 0.3;
 
   // check if cursor is active with position delta,
   if ((abs(dx) > 1 || abs(dy) > 1) && !cursorOnCanvas) {
@@ -79,129 +94,76 @@ function draw() {
   }
 
   if (cursorOnCanvas) {
-    items.forEach(pageItem => {
-      pageItem.updateAudio();
+    navigationItems.forEach(navigationItem => {
+      navigationItem.updateAudio();
     });
   }
 
-  items.forEach(pageItem => {
-    pageItem.draw()
+  navigationItems.forEach(navigationItem => {
+    navigationItem.draw()
   });
 
   // draw cursor
   fill(255, 255, 255, .5)
-  ellipse(cursorx, cursory, 15, 15)
+  ellipse(cursorX, cursorY, 15, 15)
 }
 
 function handleCursorExit() {
   cursorOnCanvas = false;
-  items.forEach(pageItem => {
-    pageItem.fadeOut();
-    pageItem.trail = [];
+  navigationItems.forEach(navigationItem => {
+    navigationItem.fadeOutAudio();
+    navigationItem.trail = [];
   });
 }
 
-window.mouseClicked = e => items.forEach(pageItem => {
-  pageItem.playAudio()
-  pageItem.clicked(e)
-});
-window.mousePressed = e => Controls.move(controls).mousePressed(e)
-window.mouseDragged = e => Controls.move(controls).mouseDragged(e, items);
-window.mouseReleased = e => Controls.move(controls).mouseReleased(e)
-
-class Controls {
-  static move(controls) {
-    function mousePressed(e) {
-      controls.viewPos.isDragging = true;
-      controls.viewPos.prevX = e.clientX;
-      controls.viewPos.prevY = e.clientY;
+function handleGroupEntryClick(clickedGroupItem) {
+  navigationItems.forEach(item => {
+    if (clickedGroupItem.subItems.includes(item.title)) {
+      item.moveToForeground();
+      item.show();
+    } else if (item == clickedGroupItem) {
+      item.hide();
+    } else {
+      // send other navigationItems to background
+      item.moveToBackground();
     }
-
-    function mouseDragged(e, pageItemsToUpdate) {
-      const { prevX, prevY, isDragging } = controls.viewPos;
-      if (!isDragging) return;
-
-      const pos = { x: e.clientX, y: e.clientY };
-      const dx = pos.x - prevX;
-      const dy = pos.y - prevY;
-
-      if (prevX || prevY) {
-        controls.view.x += dx;
-        controls.view.y += dy;
-        controls.viewPos.prevX = pos.x, controls.viewPos.prevY = pos.y
-
-        pageItemsToUpdate.forEach(pageItem => {
-          pageItem.offsetPhantomPos(dx, dy)
-        })
-      }
-    }
-
-    function mouseReleased(e) {
-      controls.viewPos.isDragging = false;
-      controls.viewPos.prevX = null;
-      controls.viewPos.prevY = null;
-    }
-
-    return {
-      mousePressed,
-      mouseDragged,
-      mouseReleased
-    }
-  }
-
-  static zoom(controls) {
-    function calcPos(x, y, zoom) {
-      const newX = width - (width * zoom - x);
-      const newY = height - (height * zoom - y);
-      return { x: newX, y: newY }
-    }
-
-
-    function worldZoom(e, pageItemsToUpdate) {
-      const { x, y, deltaY } = e;
-      const direction = deltaY > 0 ? -1 : 1;
-      const factor = 0.05;
-      const zoom = 1 * direction * factor;
-
-      const wx = (x - controls.view.x) / (width * controls.view.zoom);
-      const wy = (y - controls.view.y) / (height * controls.view.zoom);
-
-      // DISABLE ZOOM FOR NOW
-      if (controls.view.zoom + zoom > .3 && controls.view.zoom + zoom < 3) {
-        // controls.view.x -= wx * width * zoom;
-        // controls.view.y -= wy * height * zoom;
-        // controls.view.zoom += zoom;
-
-        pageItemsToUpdate.forEach(pageItem => {
-          // let { x, y } = calcPos(pageItem.x, pageItem.y, zoom);
-          // console.log(x, y);
-          // console.log(mouseX, mouseY);
-          // pageItem.offsetPhantomPos(x - pageItem.x, y - pageItem.y);
-          // console.log(zoom)
-          // pageItem.soundRadius
-        })
-      }
-    }
-    return { worldZoom }
-  }
+  })
 }
 
-class PageItem {
+function handleGroupExitClick(clickedGroupItem) {
+  navigationItems.forEach(item => {
+    if (clickedGroupItem.subItems.includes(item.title)) {
+      item.hide();
+    } else {
+      // restore other navigationItems
+      item.moveToForeground();
+    }
+  })
+}
+
+window.mouseClicked = e => navigationItems.forEach(navigationItem => {
+  navigationItem.playAudio()
+  navigationItem.clicked(e)
+});
+
+
+class NavigationItem {
   constructor(props) {
     this.title = props.title;
+    this.type = props.type;
+
     this.link = props.link;
+    this.sound = props.sound;
+    this.image = props.image;
+
     this.style = props.style;
-    this.x = props.x;
-    this.y = props.y;
-    this.drawnX = props.x;
-    this.drawnY = props.y;
-    this.phantomX = props.x;
-    this.phantomY = props.y;
+
+    this.x = window.innerWidth / 2;
+    this.y = window.innerHeight / 2;
+
     this.pointRadius = props.pointRadius;
     this.soundRadius = props.soundRadius;
     this.phantomSoundRadius = props.soundRadius;
-    this.sound = props.sound;
-    this.image = props.image;
     this.path = props.path;
     this.pathScale = props.pathScale;
     this.pathSpeed = props.pathSpeed;
@@ -209,82 +171,139 @@ class PageItem {
 
     this.trail = [];
     this.logTrailCounter = 0;
+
+    this.navigationState = 'foreground';
+  }
+
+  show() {
+    this.navigationState = 'foreground';
+  }
+
+  hide() {
+    this.navigationState = 'hidden';
+  }
+
+  moveToBackground() {
+    this.navigationState = 'background';
+  }
+
+  moveToForeground() {
+    this.navigationState = 'foreground';
   }
 
   updatePos() {
-    let { x, y } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
+    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
 
+    let targetX = canvasCenter.x;
+    let targetY = canvasCenter.y;
 
-    this.trail.push({ x: x, y: y })
+    switch (this.navigationState) {
+      case 'foreground':
+        targetX = canvasCenter.x + pathX;
+        targetY = canvasCenter.y + pathY;
 
-    if (this.trail.length > 1000) {
-      this.trail.splice(0, 1);
+        // TODO: wait until state change has occured to show / log trails
+        this.trail.push({ x: this.x, y: this.y })
+        if (this.trail.length > 1000) {
+          this.trail.splice(0, 1);
+        }
+        break;
+
+      case 'background':
+        // TODO: add random offset to theta
+        targetX = sin(pathT) * window.innerWidth * 2 / 5 + pathX * .1 + canvasCenter.x;
+        targetY = cos(pathT) * window.innerHeight * 2 / 5 + pathY * .1 + canvasCenter.y;
+        this.trail = []
+
+        break;
+
+      case 'activeGroup':
+        targetX = canvasCenter.x;
+        targetY = canvasCenter.y;
+
+        this.trail = []
+        break;
+
+      default:
+        this.trail = []
+        break;
     }
 
-    this.drawnX = this.x + x;
-    this.drawnY = this.y + y;
-    this.phantomSoundRadius = this.soundRadius * controls.view.zoom;
+    // LERP between target position and current position
+    let dx = targetX - this.x;
+    this.x += dx * 0.15;
+
+    let dy = targetY - this.y;
+    this.y += dy * 0.15;
   }
 
   draw() {
     this.updatePos();
 
-    let trailColor = color(this.style.color)
-    trailColor.setAlpha(.1)
-    fill(trailColor)
-    noStroke()
+    switch (this.navigationState) {
+      case 'hidden':
+        // don't draw if the item is hidden
+        break;
 
-    for (let i = this.trail.length - 1; i > 29; i -= 30) {
-      let step = this.trail[i];
-      let r = map(i, 0, this.trail.length, 0, this.pointRadius)
-      ellipse(this.x + step.x, this.y + step.y, r, r);
-    }
+      default:
+        let trailColor = color(this.style.color)
+        trailColor.setAlpha(.1)
+        fill(trailColor)
+        noStroke()
 
-    let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorx, cursory);
-    d = constrain(d, 0, this.soundRadius);
-    let hoverPointRadius = map(d, 0, this.soundRadius, this.soundRadius / 2, this.pointRadius);
+        for (let i = this.trail.length - 1; i > 29; i -= 30) {
+          let step = this.trail[i];
+          let r = map(i, 0, this.trail.length, 0, this.pointRadius)
+          ellipse(step.x, step.y, r, r);
+        }
 
-    if (this.image) {
-      imageMode(CENTER)
-      let imageX = this.drawnX;
-      let imageY = this.drawnY - 50 - this.pointRadius * 2;
-      let dForImage = constrain(d, this.pointRadius, this.pointRadius * 3)
-      let a = map(dForImage, this.pointRadius, this.pointRadius * 3, .6, 0)
-      tint(256, 256, 256, a);
-      // TODO: fix positioning of different image sizes
-      image(this.image, imageX, imageY, 100, 100, 0, 0, this.image.width, this.image.height, COVER);
-    }
+        let d = dist(this.x, this.y, cursorX, cursorY);
+        d = constrain(d, 0, this.soundRadius);
+        let hoverPointRadius = map(d, 0, this.soundRadius, this.soundRadius / 2, this.pointRadius);
 
-    let hoverColor = color(this.style.color);
-    hoverColor.setAlpha(.1);
-    fill(hoverColor);
-    ellipse(this.drawnX, this.drawnY, hoverPointRadius * 2, hoverPointRadius * 2);
+        if (this.image) {
+          imageMode(CENTER)
+          let imageX = this.x;
+          let imageY = this.y - 50 - this.pointRadius * 2;
+          let dForImage = constrain(d, this.pointRadius, this.pointRadius * 3)
+          let a = map(dForImage, this.pointRadius, this.pointRadius * 3, .6, 0)
+          tint(256, 256, 256, a);
+          // TODO: fix positioning of different image sizes
+          image(this.image, imageX, imageY, 100, 100, 0, 0, this.image.width, this.image.height, COVER);
+        }
 
-    noStroke();
-    let mainColor = color(this.style.color);
-    mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .2))
-    fill(mainColor)
-    ellipse(this.drawnX, this.drawnY, this.pointRadius * 2, this.pointRadius * 2);
+        let hoverColor = color(this.style.color);
+        hoverColor.setAlpha(.1);
+        fill(hoverColor);
+        ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
-    textAlign(CENTER);
-    textAlign(CENTER);
-    textSize(15);
-    text(this.title, this.drawnX, this.drawnY + this.pointRadius + 20);
+        noStroke();
+        let mainColor = color(this.style.color);
+        mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .2))
+        fill(mainColor)
+        ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
 
-    noFill();
-    let soundRadiusColor = color(128, 128, 128, .1);
-    soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .2, 0))
-    stroke(soundRadiusColor);
-    ellipse(this.drawnX, this.drawnY, this.soundRadius * 2, this.soundRadius * 2);
+        textAlign(CENTER);
+        textAlign(CENTER);
+        textSize(15);
+        text(this.title, this.x, this.y + this.pointRadius + 20);
 
-    if (d < this.pointRadius * 2) {
-      fill(255, 255, 255, .6)
-      ellipse(this.drawnX, this.drawnY, this.pointRadius * 1, this.pointRadius * 1);
-      noStroke();
-      text(this.title, this.drawnX, this.drawnY + this.pointRadius + 20);
+        noFill();
+        let soundRadiusColor = color(128, 128, 128, .1);
+        soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .2, 0))
+        stroke(soundRadiusColor);
+        ellipse(this.x, this.y, this.soundRadius * 2, this.soundRadius * 2);
+
+        if (d < this.pointRadius * 2) {
+          fill(255, 255, 255, .6)
+          ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
+          noStroke();
+          text(this.title, this.x, this.y + this.pointRadius + 20);
+        }
+
+        break;
     }
   }
-
 
   loop() {
     this.sound.setLoop(true);
@@ -304,7 +323,7 @@ class PageItem {
   }
 
   updateVolume() {
-    let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorx, cursory);
+    let d = dist(this.x, this.y, cursorX, cursorY);
     d = constrain(d, 0, this.phantomSoundRadius);
     let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
     let a = float(aInt) / 100.0;
@@ -312,25 +331,52 @@ class PageItem {
   }
 
   updatePanning() {
-    let pan = (this.drawnX - this.x + this.phantomX - width / 2) / (width / 4);
+    let pan = (this.x - width / 2) / (width / 4);
     pan = constrain(pan, -1, 1)
     this.sound.pan(pan);
   }
 
-  fadeOut() {
+  fadeOutAudio() {
     this.sound.setVolume(0, 1.0);
   }
+}
 
-  offsetPhantomPos(dx, dy) {
-    this.phantomX += dx;
-    this.phantomY += dy;
+class LinkItem extends NavigationItem {
+  constructor(props) {
+    super(props)
   }
 
   clicked(e) {
-    let d = dist(e.clientX, e.clientY, this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY);
+    // check if mouse click is within item bounds
+    let d = dist(e.clientX, e.clientY, this.x, this.y);
     if (d < this.pointRadius * 2) {
       handleCursorExit();
       window.open(this.link);
+    }
+  }
+}
+
+class GroupItem extends NavigationItem {
+  constructor(props) {
+    super(props);
+    this.subItems = props.subItems;
+  }
+
+  clicked(e) {
+    // check if mouse click is within item bounds
+    if (this.isActiveGroup) {
+      let d = dist(e.clientX, e.clientY, canvasCenter.x, canvasCenter.y);
+      // if clicking outside the center area, exit the group
+      if (d > window.innerHeight / 3) {
+        this.isActiveGroup = false;
+        handleGroupExitClick(this);
+      }
+    } else {
+      let d = dist(e.clientX, e.clientY, this.x, this.y);
+      if (d < this.pointRadius * 2) {
+        this.isActiveGroup = true;
+        handleGroupEntryClick(this);
+      }
     }
   }
 }
