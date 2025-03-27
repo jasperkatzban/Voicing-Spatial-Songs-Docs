@@ -16,7 +16,7 @@ const navigationItemProps = [
     {
         title: 'SPATIAL STRATEGIES PROMPTS',
         type: 'link',
-        link: '/spatial-strategies.html',
+        link: 'https://www.researchcatalogue.net/view/3512750/3539951',
         style: navigationItemStyles.Output,
         soundURL: 'sounds/test-tone-5.mp3',
         pointRadius: 10,
