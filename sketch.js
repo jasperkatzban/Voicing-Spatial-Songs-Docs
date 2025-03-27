@@ -128,10 +128,6 @@ function draw() {
     navigationItem.draw()
   });
 
-  // draw cursor dot 
-  fill(255, 255, 255, .5)
-  ellipse(cursorX, cursorY, 15, 15)
-
   // draw audio toggle
   fill(100);
   textSize(TEXT_SIZE * canvasScale);
@@ -145,6 +141,10 @@ function draw() {
   textSize(TEXT_SIZE * canvasScale);
   textAlign(RIGHT, BASELINE)
   text('Voicing Spatial Songs Documentation Demo', window.innerWidth - 20, window.innerHeight - 20);
+
+  // draw cursor dot 
+  fill(255, 255, 255, .5)
+  ellipse(cursorX, cursorY, 15, 15)
 
   // set flag to false once all draw updates have occured
   itemClickedDuringFrame = false;
