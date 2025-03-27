@@ -136,7 +136,7 @@ function draw() {
   textSize(TEXT_SIZE * canvasScale);
   textAlign(LEFT, BASELINE)
   let audio_toggle_icon = (AUDIO_ENABLED) ? '🔈' : '🔇';
-  let audio_enable_tooltip = (!FIRST_INTERACTION && !AUDIO_ENABLED ? 'Click to enable audio' : '');
+  let audio_enable_tooltip = (!FIRST_INTERACTION && !AUDIO_ENABLED ? 'click to enable audio' : '');
   text(audio_toggle_icon + audio_enable_tooltip, 20, window.innerHeight - 20);
 
   // draw tooltip

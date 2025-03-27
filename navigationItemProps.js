@@ -38,7 +38,7 @@ const navigationItemProps = [
         pathScale: .125,
         pathSpeed: .00005,
         pathOffset: Math.PI,
-        subItems: ['Chaos Pendulum', `Space Halo (Halo d'Espace)`, 'Bagua']
+        subItems: ['CHAOS PENDULUM', `SPACE HALO (HALO D'ESPACE)`, 'BAGUA']
     },
     {
         title: 'CHAOS PENDULUM',
