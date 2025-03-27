@@ -182,7 +182,7 @@ class PromptItem {
     ellipse(this.x, this.y, this.scaledSoundRadius * 2, this.scaledSoundRadius * 2);
 
     if (this.isActivated) {
-      stroke(255, 255, 255, .6);
+      stroke(255, 255, 255, .3);
       ellipse(this.x, this.y, this.scaledSoundRadius * 2, this.scaledSoundRadius * 2);
     }
   }
