@@ -2,12 +2,15 @@ let canvas, canvasCenter;
 
 const navigationItems = new Map();
 
-let cursorX = 1;
-let cursorY = 1;
+let cursorX = window.innerHeight / 2;
+let cursorY = window.innerHeight / 2;
 let cursorOnCanvas = true;
 let canvasScale = window.innerHeight / 800;
 
 const TEXT_SIZE = 15;
+
+let AUDIO_ENABLED = false;
+let FIRST_INTERACTION = false;
 
 const PATHS = {
   ORBIT_LEFT: (scale, speed, offset) => {
@@ -96,10 +99,20 @@ function draw() {
     cursorOnCanvas = true;
   }
 
+  // if cursor active, update audio
   if (cursorOnCanvas) {
     navigationItems.forEach(navigationItem => {
       navigationItem.updateAudio();
     });
+  }
+
+  // enable or disable audioContext
+  if (getAudioContext().state == 'running' && !AUDIO_ENABLED) {
+    getAudioContext().suspend();
+  }
+
+  if (getAudioContext().state == 'suspended' && AUDIO_ENABLED) {
+    getAudioContext().resume();
   }
 
   navigationItems.forEach(navigationItem => {
@@ -109,6 +122,20 @@ function draw() {
   // draw cursor
   fill(255, 255, 255, .5)
   ellipse(cursorX, cursorY, 15, 15)
+
+  // draw audio toggle
+  fill(100);
+  textSize(TEXT_SIZE * canvasScale);
+  textAlign(LEFT, BASELINE)
+  let audio_toggle_icon = (AUDIO_ENABLED) ? '🔈' : '🔇';
+  let audio_enable_tooltip = (!FIRST_INTERACTION && !AUDIO_ENABLED ? 'Click to enable audio' : '');
+  text(audio_toggle_icon + audio_enable_tooltip, 20, window.innerHeight - 20);
+
+  // draw tooltip
+  fill(100);
+  textSize(TEXT_SIZE * canvasScale);
+  textAlign(RIGHT, BASELINE)
+  text('Voicing Spatial Songs Documentation Demo', window.innerWidth - 20, window.innerHeight - 20);
 }
 
 function handleCursorExit() {
@@ -144,11 +171,22 @@ function handleGroupExitClick(clickedGroupItem) {
   })
 }
 
-window.mouseClicked = e => navigationItems.forEach(navigationItem => {
-  navigationItem.playAudio()
-  navigationItem.clicked(e)
-});
+mouseClicked = e => {
+  let d = dist(e.clientX, e.clientY, 20, window.innerHeight - 20);
+  if (d < 20) {
+    AUDIO_ENABLED = !AUDIO_ENABLED
+  }
 
+  if (!FIRST_INTERACTION) {
+    AUDIO_ENABLED = true;
+    FIRST_INTERACTION = true;
+  }
+
+  navigationItems.forEach(navigationItem => {
+    navigationItem.playAudio()
+    navigationItem.clicked(e)
+  });
+}
 
 class NavigationItem {
   constructor(props) {

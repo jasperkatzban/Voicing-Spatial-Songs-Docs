@@ -13,11 +13,3 @@ canvas {
 p {
   font-family: sans-serif;
 }
-
-.banner {
-  position: absolute;
-  text-align: center;
-  width: 100%;
-  bottom: 0;
-  color: gray;
-}
