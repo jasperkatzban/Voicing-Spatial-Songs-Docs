@@ -10,8 +10,9 @@ let canvasScale = window.innerHeight / 800;
 
 const TEXT_SIZE = 15;
 
-let AUDIO_ENABLED = false;
-let FIRST_INTERACTION = false;
+let audioEnabled = false;
+let firstInteraction = false;
+let itemClickedDuringFrame = false;
 
 const PATHS = {
   ORBIT_LEFT: (scale, speed, offset) => {
@@ -110,11 +111,11 @@ function draw() {
   }
 
   // enable or disable audioContext
-  if (getAudioContext().state == 'running' && !AUDIO_ENABLED) {
+  if (getAudioContext().state == 'running' && !audioEnabled) {
     getAudioContext().suspend();
   }
 
-  if (getAudioContext().state == 'suspended' && AUDIO_ENABLED) {
+  if (getAudioContext().state == 'suspended' && audioEnabled) {
     getAudioContext().resume();
   }
 
@@ -135,8 +136,8 @@ function draw() {
   fill(100);
   textSize(TEXT_SIZE * canvasScale);
   textAlign(LEFT, BASELINE)
-  let audio_toggle_icon = (AUDIO_ENABLED) ? '🔈' : '🔇';
-  let audio_enable_tooltip = (!FIRST_INTERACTION && !AUDIO_ENABLED ? 'click to enable audio' : '');
+  let audio_toggle_icon = (audioEnabled) ? '🔈' : '🔇';
+  let audio_enable_tooltip = (!firstInteraction && !audioEnabled ? 'click to enable audio' : '');
   text(audio_toggle_icon + audio_enable_tooltip, 20, window.innerHeight - 20);
 
   // draw tooltip
@@ -144,6 +145,9 @@ function draw() {
   textSize(TEXT_SIZE * canvasScale);
   textAlign(RIGHT, BASELINE)
   text('Voicing Spatial Songs Documentation Demo', window.innerWidth - 20, window.innerHeight - 20);
+
+  // set flag to false once all draw updates have occured
+  itemClickedDuringFrame = false;
 }
 
 function handleCursorExit() {
@@ -182,12 +186,12 @@ function handleGroupExitClick(clickedGroupItem) {
 mouseClicked = e => {
   let d = dist(e.clientX, e.clientY, 20, window.innerHeight - 20);
   if (d < 20) {
-    AUDIO_ENABLED = !AUDIO_ENABLED
+    audioEnabled = !audioEnabled
   }
 
-  if (!FIRST_INTERACTION) {
-    AUDIO_ENABLED = true;
-    FIRST_INTERACTION = true;
+  if (!firstInteraction) {
+    audioEnabled = true;
+    firstInteraction = true;
   }
 
   navigationItems.forEach(navigationItem => {
@@ -392,19 +396,30 @@ class NavigationItem {
   fadeOutAudio() {
     this.sound.setVolume(0, 1.0);
   }
+
+  clicked(e) {
+    // only handle click action if no other items have been clicked
+    if (!itemClickedDuringFrame) {
+      this.handleClick(e)
+    }
+  }
+
+  handleClick(e) {
+    // nothing to click on in the template class
+  }
 }
 
 class LinkItem extends NavigationItem {
   constructor(props) {
     super(props)
   }
-
-  clicked(e) {
+  handleClick(e) {
     // check if mouse click is within item bounds
     let d = dist(e.clientX, e.clientY, this.x, this.y);
     if (d < this.soundRadius * (2 / 5)) {
       handleCursorExit();
       window.open(this.link);
+      itemClickedDuringFrame = true;
     }
   }
 }
@@ -413,9 +428,10 @@ class GroupItem extends NavigationItem {
   constructor(props) {
     super(props);
     this.subItems = props.subItems;
+    this.isActiveGroup = false;
   }
 
-  clicked(e) {
+  handleClick(e) {
     // check if mouse click is within item bounds
     if (this.isActiveGroup) {
       let d = dist(e.clientX, e.clientY, canvasCenter.x, canvasCenter.y);
@@ -429,6 +445,7 @@ class GroupItem extends NavigationItem {
       if (d < this.soundRadius / 4) {
         this.isActiveGroup = true;
         handleGroupEntryClick(this);
+        itemClickedDuringFrame = true;
       }
     }
   }
