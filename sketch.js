@@ -97,6 +97,7 @@ function handleCursorExit() {
   cursorOnCanvas = false;
   items.forEach(pageItem => {
     pageItem.fadeOut();
+    pageItem.trail = [];
   });
 }
 
@@ -205,10 +206,21 @@ class PageItem {
     this.pathScale = props.pathScale;
     this.pathSpeed = props.pathSpeed;
     this.pathOffset = props.pathOffset;
+
+    this.trail = [];
+    this.logTrailCounter = 0;
   }
 
   updatePos() {
     let { x, y } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
+
+
+    this.trail.push({ x: x, y: y })
+
+    if (this.trail.length > 1000) {
+      this.trail.splice(0, 1);
+    }
+
     this.drawnX = this.x + x;
     this.drawnY = this.y + y;
     this.phantomSoundRadius = this.soundRadius * controls.view.zoom;
@@ -216,6 +228,17 @@ class PageItem {
 
   draw() {
     this.updatePos();
+
+    let trailColor = color(this.style.color)
+    trailColor.setAlpha(.1)
+    fill(trailColor)
+    noStroke()
+
+    for (let i = this.trail.length - 1; i > 29; i -= 30) {
+      let step = this.trail[i];
+      let r = map(i, 0, this.trail.length, 0, this.pointRadius)
+      ellipse(this.x + step.x, this.y + step.y, r, r);
+    }
 
     let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorx, cursory);
     d = constrain(d, 0, this.soundRadius);
