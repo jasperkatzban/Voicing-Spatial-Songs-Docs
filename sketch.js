@@ -2,30 +2,28 @@ let canvas, canvasCenter;
 
 const navigationItems = new Map();
 
-const controls = {
-  view: { x: 0, y: 0, zoom: 1 },
-  viewPos: { prevX: null, prevY: null, isDragging: false },
-}
-
 let cursorX = 1;
 let cursorY = 1;
 let cursorOnCanvas = true;
+let canvasScale = window.innerHeight / 800;
 
-const paths = {
-  orbitLeft: (scale, speed, offset) => {
-    let x = scale * sin(millis() * speed + offset);
-    let y = scale * cos(millis() * speed + offset);
+const TEXT_SIZE = 15;
+
+const PATHS = {
+  ORBIT_LEFT: (scale, speed, offset) => {
+    let x = scale * window.innerHeight * sin(millis() * speed + offset);
+    let y = scale * window.innerHeight * cos(millis() * speed + offset);
     let t = millis() * speed + offset
     return { x, y, t };
   },
-  orbitRight: (scale, speed, offset) => {
-    let x = scale * sin(-millis() * speed + offset);
-    let y = scale * cos(-millis() * speed + offset);
+  ORBIT_RIGHT: (scale, speed, offset) => {
+    let x = scale * window.innerHeight * sin(-millis() * speed + offset);
+    let y = scale * window.innerHeight * cos(-millis() * speed + offset);
     let t = -millis() * speed + offset
     return { x, y, t };
   },
-  roseLeft: (scale, speed, offset) => {
-    let r = scale * sin(millis() * speed);
+  ROSE_LEFT: (scale, speed, offset) => {
+    let r = scale * window.innerHeight * sin(millis() * speed);
     let t = millis() * speed / 3 + offset;
     let x = r * sin(t);
     let y = r * cos(t);
@@ -67,18 +65,23 @@ function preload() {
 
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
-  canvasCenter = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+  canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 }
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
 
   navigationItems.forEach(navigationItem => {
     navigationItem.loop();
   })
+}
 
+function windowResized() {
+  resizeCanvas(window.innerWidth, window.innerHeight);
+  canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 }
+  canvasScale = window.innerHeight / 800;
 }
 
 function draw() {
-  background(30)
+  background(30);
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -203,10 +206,10 @@ class NavigationItem {
         targetY = canvasCenter.y + pathY;
 
         // TODO: wait until state change has occured to show / log trails
-        this.trail.push({ x: this.x, y: this.y })
-        if (this.trail.length > 1000) {
-          this.trail.splice(0, 1);
-        }
+        // this.trail.push({ x: this.x, y: this.y })
+        // if (this.trail.length > 1000) {
+        //   this.trail.splice(0, 1);
+        // }
         break;
 
       case 'background':
@@ -285,7 +288,7 @@ class NavigationItem {
 
         textAlign(CENTER);
         textAlign(CENTER);
-        textSize(15);
+        textSize(TEXT_SIZE * canvasScale);
         text(this.title, this.x, this.y + this.pointRadius + 20);
 
         noFill();

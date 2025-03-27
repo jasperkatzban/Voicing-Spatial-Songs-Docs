@@ -1,15 +1,13 @@
-const DEFAULT_PROMPT_X = window.innerWidth / 2;
-const DEFAULT_PROMPT_Y = window.innerHeight / 2;
-const DEFAULT_PROMPT_POINT_RADIUS = 50;
-const DEFAULT_PROMPT_SOUND_RADIUS = 100;
-const DEFAULT_PROMPT_PATH_SCALE = 20;
-const DEFAULT_PROMPT_PATH_SPEED = .0003;
+const DEFAULT_PROMPT_POINT_RADIUS = .07;
+const DEFAULT_PROMPT_SOUND_RADIUS = .14;
+const DEFAULT_PROMPT_PATH_SCALE = .0;
+const DEFAULT_PROMPT_PATH_SPEED = .0000; //3
 const DEFAULT_PROMPT_PATH_OFFSET = 0;
 
-const R1 = 150;
-const R2 = 260;
-const R3 = 300;
-const R4 = 320;
+const R1 = .2;
+const R2 = .35;
+const R3 = .4;
+const R4 = .405;
 
 // Option of Radial Arrangement
 const promptItems = [
@@ -19,9 +17,9 @@ const promptItems = [
         style: itemStyles.Center,
         soundURL: 'sounds/test-tone-1.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X,
-        y: DEFAULT_PROMPT_Y,
-        path: paths.roseLeft,
+        x: 0,
+        y: 0,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -30,9 +28,9 @@ const promptItems = [
         style: itemStyles.Inner,
         soundURL: 'sounds/test-tone-2.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 0 / 3) * R1,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 0 / 3) * R1,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 0 / 3) * R1,
+        y: Math.cos(Math.PI * 0 / 3) * R1,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -41,9 +39,9 @@ const promptItems = [
         style: itemStyles.Inner,
         soundURL: 'sounds/test-tone-3.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 1 / 3) * R1,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 1 / 3) * R1,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 1 / 3) * R1,
+        y: Math.cos(Math.PI * 1 / 3) * R1,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -52,9 +50,9 @@ const promptItems = [
         style: itemStyles.Inner,
         soundURL: 'sounds/test-tone-4.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 2 / 3) * R1,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 2 / 3) * R1,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 2 / 3) * R1,
+        y: Math.cos(Math.PI * 2 / 3) * R1,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
 
     },
@@ -64,9 +62,9 @@ const promptItems = [
         style: itemStyles.Inner,
         soundURL: 'sounds/test-tone-2.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 3 / 3) * R1,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 3 / 3) * R1,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 3 / 3) * R1,
+        y: Math.cos(Math.PI * 3 / 3) * R1,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
 
     },
@@ -76,9 +74,9 @@ const promptItems = [
         style: itemStyles.Inner,
         soundURL: 'sounds/test-tone-3.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 4 / 3) * R1,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 4 / 3) * R1,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 4 / 3) * R1,
+        y: Math.cos(Math.PI * 4 / 3) * R1,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -87,9 +85,9 @@ const promptItems = [
         style: itemStyles.Inner,
         soundURL: 'sounds/test-tone-4.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 5 / 3) * R1,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 5 / 3) * R1,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 5 / 3) * R1,
+        y: Math.cos(Math.PI * 5 / 3) * R1,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -98,9 +96,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-5.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 1 / 6) * R2,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 1 / 6) * R2,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 1 / 6) * R2,
+        y: Math.cos(Math.PI * 1 / 6) * R2,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -109,9 +107,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 3 / 6) * R2,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 3 / 6) * R2,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 3 / 6) * R2,
+        y: Math.cos(Math.PI * 3 / 6) * R2,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -120,9 +118,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-7.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 5 / 6) * R2,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 5 / 6) * R2,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 5 / 6) * R2,
+        y: Math.cos(Math.PI * 5 / 6) * R2,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -131,9 +129,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-5.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 7 / 6) * R2,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 7 / 6) * R2,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 7 / 6) * R2,
+        y: Math.cos(Math.PI * 7 / 6) * R2,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -142,9 +140,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-7.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 9 / 6) * R2,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 9 / 6) * R2,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 9 / 6) * R2,
+        y: Math.cos(Math.PI * 9 / 6) * R2,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -153,9 +151,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 11 / 6) * R2,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 11 / 6) * R2,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 11 / 6) * R2,
+        y: Math.cos(Math.PI * 11 / 6) * R2,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -164,9 +162,9 @@ const promptItems = [
         style: itemStyles.Outer,
         soundURL: 'sounds/test-tone-8.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 1 / 3) * R3,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 1 / 3) * R3,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 1 / 3) * R3,
+        y: Math.cos(Math.PI * 1 / 3) * R3,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -175,9 +173,9 @@ const promptItems = [
         style: itemStyles.Outest,
         soundURL: 'sounds/test-tone-9.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 2 / 3) * R3,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 2 / 3) * R3,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 2 / 3) * R3,
+        y: Math.cos(Math.PI * 2 / 3) * R3,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -186,9 +184,9 @@ const promptItems = [
         style: itemStyles.Outest,
         soundURL: 'sounds/test-tone-10.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 4 / 3) * R3,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 4 / 3) * R3,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI * 4 / 3) * R3,
+        y: Math.cos(Math.PI * 4 / 3) * R3,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -197,9 +195,9 @@ const promptItems = [
         style: itemStyles.Outest,
         soundURL: 'sounds/test-tone-9.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI * 5 / 3) * R3,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI * 5 / 3) * R3,
-        path: paths.roseLeft,
+        x: Math.sin(Math.PI * 5 / 3) * R3,
+        y: Math.cos(Math.PI * 5 / 3) * R3,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -208,14 +206,14 @@ const promptItems = [
         style: itemStyles.Outest,
         soundURL: 'sounds/test-tone-10.mp3',
         imageUrl: 'images/test.png',
-        x: DEFAULT_PROMPT_X + Math.sin(Math.PI) * R4,
-        y: DEFAULT_PROMPT_Y + Math.cos(Math.PI) * R4,
-        path: paths.roseRight,
+        x: Math.sin(Math.PI) * R4,
+        y: Math.cos(Math.PI) * R4,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
 ]
 
-// Option of paths passing through center
+// Option of PATHS passing through center
 /*
 const promptItems = [
     {
@@ -224,7 +222,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -233,7 +231,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -242,7 +240,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
 
     },
@@ -252,7 +250,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
 
     },
@@ -262,7 +260,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
 
     },
@@ -272,7 +270,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -281,7 +279,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -290,7 +288,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -299,7 +297,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -308,7 +306,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -317,7 +315,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -326,7 +324,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -335,7 +333,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -344,7 +342,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -353,7 +351,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -362,7 +360,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -371,7 +369,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseLeft,
+        path: PATHS.ROSE_LEFT,
         pathOffset: Math.random() * Math.PI * 3
     },
     {
@@ -380,7 +378,7 @@ const promptItems = [
         style: itemStyles.Default,
         soundURL: 'sounds/test-tone-6.mp3',
         imageUrl: 'images/test.png',
-        path: paths.roseRight,
+        path: PATHS.ROSE_RIGHT,
         pathOffset: Math.random() * Math.PI * 3
     },
 ]
