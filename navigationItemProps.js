@@ -1,11 +1,11 @@
 const navigationItemProps = [
     {
-        title: 'Performance',
+        title: 'PERFORMANCE',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512949',
         style: navigationItemStyles.Output,
         soundURL: 'sounds/test-tone-6.mp3',
-        imageUrl: 'images/test.png',
+        imageUrl: 'images/performance-preview.png',
         pointRadius: 10,
         soundRadius: 100,
         path: PATHS.ORBIT_RIGHT,
@@ -14,7 +14,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        title: 'Spatial Strategies Prompts',
+        title: 'SPATIAL STRATEGIES PROMPTS',
         type: 'link',
         link: '/spatial-strategies.html',
         style: navigationItemStyles.Output,
@@ -27,7 +27,7 @@ const navigationItemProps = [
         pathOffset: Math.PI / 2,
     },
     {
-        title: 'Interfaces',
+        title: 'INTERFACES',
         type: 'group',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Output,
@@ -41,7 +41,7 @@ const navigationItemProps = [
         subItems: ['Chaos Pendulum', `Space Halo (Halo d'Espace)`, 'Bagua']
     },
     {
-        title: 'Chaos Pendulum',
+        title: 'CHAOS PENDULUM',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539322',
         style: navigationItemStyles.Output,
@@ -55,7 +55,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        title: `Space Halo (Halo d'Espace)`,
+        title: `SPACE HALO (HALO D'ESPACE)`,
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539325',
         style: navigationItemStyles.Output,
@@ -69,7 +69,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 2 / 3,
     },
     {
-        title: 'Bagua',
+        title: 'BAGUA',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539328',
         style: navigationItemStyles.Output,
@@ -83,7 +83,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 4 / 3,
     },
     {
-        title: 'Sound Scores Publication',
+        title: 'SOUND SCORES PUBLICATION',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512955',
         style: navigationItemStyles.Output,
@@ -97,7 +97,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 1.5,
     },
     {
-        title: 'Process',
+        title: 'PROCESS',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512975',
         style: navigationItemStyles.Process,
@@ -110,7 +110,7 @@ const navigationItemProps = [
         pathOffset: Math.PI / 2,
     },
     {
-        title: 'Sweet Spot',
+        title: 'SWEET SPOT',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512964',
         style: navigationItemStyles.Thought,
@@ -123,7 +123,7 @@ const navigationItemProps = [
         pathOffset: Math.PI / 2,
     },
     {
-        title: 'Agency',
+        title: 'AGENCY',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512967',
         style: navigationItemStyles.Thought,
@@ -136,7 +136,7 @@ const navigationItemProps = [
         pathOffset: -Math.PI / 2,
     },
     {
-        title: 'Sonic / Space',
+        title: 'SONIC / SPACE',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512971',
         style: navigationItemStyles.Thought,
@@ -149,7 +149,7 @@ const navigationItemProps = [
         pathOffset: Math.PI,
     },
     {
-        title: 'Techno Voice',
+        title: 'TECHNO VOICE',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512961',
         style: navigationItemStyles.Thought,
@@ -162,7 +162,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        title: 'Inspiration',
+        title: 'INSPIRATION',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512978',
         style: navigationItemStyles.Inspiration,
