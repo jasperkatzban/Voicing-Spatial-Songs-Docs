@@ -5,6 +5,7 @@ const navigationItems = new Map();
 let cursorX = window.innerHeight / 2;
 let cursorY = window.innerHeight / 2;
 let cursorOnCanvas = true;
+let cursorImage;
 let canvasScale = window.innerHeight / 800;
 
 const TEXT_SIZE = 15;
@@ -42,6 +43,8 @@ const navigationItemStyles = {
 }
 
 function preload() {
+  cursorImage = loadImage('images/cursor-corona.png')
+
   navigationItemProps.forEach(navigationItem => {
     navigationItem.sound = loadSound(navigationItem.soundURL);
     if (navigationItem.imageUrl !== undefined) {
@@ -115,11 +118,16 @@ function draw() {
     getAudioContext().resume();
   }
 
+  // draw cursor halo
+  imageMode(CENTER)
+  tint(256, 256, 256, 1);
+  image(cursorImage, cursorX, cursorY, 200, 200);
+
   navigationItems.forEach(navigationItem => {
     navigationItem.draw()
   });
 
-  // draw cursor
+  // draw cursor dot 
   fill(255, 255, 255, .5)
   ellipse(cursorX, cursorY, 15, 15)
 
@@ -244,10 +252,10 @@ class NavigationItem {
         targetY = canvasCenter.y + pathY;
 
         // TODO: wait until state change has occured to show / log trails
-        // this.trail.push({ x: this.x, y: this.y })
-        // if (this.trail.length > 1000) {
-        //   this.trail.splice(0, 1);
-        // }
+        this.trail.push({ x: this.x, y: this.y })
+        if (this.trail.length > 2000) {
+          this.trail.splice(0, 1);
+        }
         break;
 
       case 'background':
@@ -288,13 +296,13 @@ class NavigationItem {
 
       default:
         let trailColor = color(this.style.color)
-        trailColor.setAlpha(.1)
+        trailColor.setAlpha(.01)
         fill(trailColor)
         noStroke()
 
         for (let i = this.trail.length - 1; i > 29; i -= 30) {
           let step = this.trail[i];
-          let r = map(i, 0, this.trail.length, 0, this.pointRadius)
+          let r = map(i, 0, this.trail.length, 0, this.soundRadius)
           ellipse(step.x, step.y, r, r);
         }
 
@@ -314,7 +322,7 @@ class NavigationItem {
         }
 
         let hoverColor = color(this.style.color);
-        hoverColor.setAlpha(.1);
+        hoverColor.setAlpha(.2);
         fill(hoverColor);
         ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
