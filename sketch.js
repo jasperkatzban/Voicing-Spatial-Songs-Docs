@@ -1,7 +1,7 @@
 let canvas, items;
 
 let PerformancePageItem
-let SpatialSongwritingPromptsPageItem
+let SpatialStrategiesPromptsPageItem
 let InterfacesPageItem
 let SoundScoresPublicationPageItem
 let ProcessPageItem
@@ -54,7 +54,7 @@ function preload() {
   pageItems.Performance.sound = loadSound(pageItems.Performance.soundURL);
   pageItems.Performance.image = loadImage(pageItems.Performance.imageUrl);
 
-  pageItems.SpatialSongwritingPrompts.sound = loadSound(pageItems.SpatialSongwritingPrompts.soundURL);
+  pageItems.SpatialStrategiesPrompts.sound = loadSound(pageItems.SpatialStrategiesPrompts.soundURL);
   pageItems.Interfaces.sound = loadSound(pageItems.Interfaces.soundURL);
   pageItems.SoundScoresPublication.sound = loadSound(pageItems.SoundScoresPublication.soundURL);
   pageItems.Process.sound = loadSound(pageItems.Process.soundURL);
@@ -65,7 +65,7 @@ function preload() {
   pageItems.Inspiration.sound = loadSound(pageItems.Inspiration.soundURL);
 
   PerformancePageItem = new PageItem(pageItems.Performance)
-  SpatialSongwritingPromptsPageItem = new PageItem(pageItems.SpatialSongwritingPrompts)
+  SpatialStrategiesPromptsPageItem = new PageItem(pageItems.SpatialStrategiesPrompts)
   InterfacesPageItem = new PageItem(pageItems.Interfaces)
   SoundScoresPublicationPageItem = new PageItem(pageItems.SoundScoresPublication)
   ProcessPageItem = new PageItem(pageItems.Process)
@@ -83,7 +83,7 @@ function setup() {
   noCursor();
 
   items = [PerformancePageItem,
-    SpatialSongwritingPromptsPageItem,
+    SpatialStrategiesPromptsPageItem,
     InterfacesPageItem,
     SoundScoresPublicationPageItem,
     ProcessPageItem,

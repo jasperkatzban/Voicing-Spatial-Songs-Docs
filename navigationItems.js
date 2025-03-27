@@ -14,9 +14,9 @@ const pageItems = {
         pathSpeed: .00005,
         pathOffset: 0,
     },
-    SpatialSongwritingPrompts: {
-        title: 'Spatial Songwriting Prompts',
-        link: 'https://www.researchcatalogue.net/view/3512750/3512952',
+    SpatialStrategiesPrompts: {
+        title: 'Spatial Strategies Prompts',
+        link: '/spatial-strategies.html',
         style: itemStyles.Output,
         soundURL: 'sounds/test-tone-5.mp3',
         x: window.innerWidth / 2,
