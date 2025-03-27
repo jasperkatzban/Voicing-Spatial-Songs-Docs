@@ -1,15 +1,6 @@
-let canvas, items;
+let canvas;
 
-let PerformancePageItem
-let SpatialStrategiesPromptsPageItem
-let InterfacesPageItem
-let SoundScoresPublicationPageItem
-let ProcessPageItem
-let SweetSpotPageItem
-let AgencyPageItem
-let SonicSpacePageItem
-let TechnoVoicePageItem
-let InspirationPageItem
+const items = new Map();
 
 const controls = {
   view: { x: 0, y: 0, zoom: 1 },
@@ -47,34 +38,14 @@ const itemStyles = {
   Output: { color: '#3351b0' }
 }
 
-
-
 function preload() {
-
-  pageItems.Performance.sound = loadSound(pageItems.Performance.soundURL);
-  pageItems.Performance.image = loadImage(pageItems.Performance.imageUrl);
-
-  pageItems.SpatialStrategiesPrompts.sound = loadSound(pageItems.SpatialStrategiesPrompts.soundURL);
-  pageItems.Interfaces.sound = loadSound(pageItems.Interfaces.soundURL);
-  pageItems.SoundScoresPublication.sound = loadSound(pageItems.SoundScoresPublication.soundURL);
-  pageItems.Process.sound = loadSound(pageItems.Process.soundURL);
-  pageItems.SweetSpot.sound = loadSound(pageItems.SweetSpot.soundURL);
-  pageItems.Agency.sound = loadSound(pageItems.Agency.soundURL);
-  pageItems.SonicSpace.sound = loadSound(pageItems.SonicSpace.soundURL);
-  pageItems.TechnoVoice.sound = loadSound(pageItems.TechnoVoice.soundURL);
-  pageItems.Inspiration.sound = loadSound(pageItems.Inspiration.soundURL);
-
-  PerformancePageItem = new PageItem(pageItems.Performance)
-  SpatialStrategiesPromptsPageItem = new PageItem(pageItems.SpatialStrategiesPrompts)
-  InterfacesPageItem = new PageItem(pageItems.Interfaces)
-  SoundScoresPublicationPageItem = new PageItem(pageItems.SoundScoresPublication)
-  ProcessPageItem = new PageItem(pageItems.Process)
-  SweetSpotPageItem = new PageItem(pageItems.SweetSpot)
-  AgencyPageItem = new PageItem(pageItems.Agency)
-  SonicSpacePageItem = new PageItem(pageItems.SonicSpace)
-  TechnoVoicePageItem = new PageItem(pageItems.TechnoVoice)
-  InspirationPageItem = new PageItem(pageItems.Inspiration)
-
+  pageItems.forEach(pageItem => {
+    pageItem.sound = loadSound(pageItem.soundURL);
+    if (pageItem.imageUrl !== undefined) {
+      pageItem.image = loadImage(pageItem.imageUrl);
+    }
+    items.set(pageItem.title, new PageItem(pageItem))
+  })
 }
 
 function setup() {
@@ -82,23 +53,11 @@ function setup() {
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
 
-  items = [PerformancePageItem,
-    SpatialStrategiesPromptsPageItem,
-    InterfacesPageItem,
-    SoundScoresPublicationPageItem,
-    ProcessPageItem,
-    SweetSpotPageItem,
-    AgencyPageItem,
-    SonicSpacePageItem,
-    TechnoVoicePageItem,
-    InspirationPageItem]
-
   items.forEach(pageItem => {
     pageItem.loop();
   })
 
   canvas.mouseWheel(e => Controls.zoom(controls).worldZoom(e, items))
-
 }
 
 function draw() {
@@ -113,7 +72,6 @@ function draw() {
   let targetY = mouseY;
   let dy = targetY - cursory;
   cursory += dy * 0.15;
-
 
   // check if cursor is active with position delta,
   if ((abs(dx) > 1 || abs(dy) > 1) && !cursorOnCanvas) {
@@ -222,13 +180,10 @@ class Controls {
           // pageItem.soundRadius
         })
       }
-
     }
-
     return { worldZoom }
   }
 }
-
 
 class PageItem {
   constructor(props) {

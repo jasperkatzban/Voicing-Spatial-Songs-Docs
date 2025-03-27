@@ -1,5 +1,5 @@
-const pageItems = {
-    Performance: {
+const pageItems = [
+    {
         title: 'Performance',
         link: 'https://www.researchcatalogue.net/view/3512750/3512949',
         style: itemStyles.Output,
@@ -14,7 +14,7 @@ const pageItems = {
         pathSpeed: .00005,
         pathOffset: 0,
     },
-    SpatialStrategiesPrompts: {
+    {
         title: 'Spatial Strategies Prompts',
         link: '/spatial-strategies.html',
         style: itemStyles.Output,
@@ -28,7 +28,7 @@ const pageItems = {
         pathSpeed: .00005,
         pathOffset: Math.PI / 2,
     },
-    Interfaces: {
+    {
         title: 'Interfaces',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: itemStyles.Output,
@@ -42,7 +42,7 @@ const pageItems = {
         pathSpeed: .00005,
         pathOffset: Math.PI,
     },
-    SoundScoresPublication: {
+    {
         title: 'Sound Scores Publication',
         link: 'https://www.researchcatalogue.net/view/3512750/3512955',
         style: itemStyles.Output,
@@ -57,7 +57,7 @@ const pageItems = {
         pathSpeed: .00005,
         pathOffset: Math.PI * 1.5,
     },
-    Process: {
+    {
         title: 'Process',
         link: 'https://www.researchcatalogue.net/view/3512750/3512975',
         style: itemStyles.Process,
@@ -71,7 +71,7 @@ const pageItems = {
         pathSpeed: .0001,
         pathOffset: Math.PI / 2,
     },
-    SweetSpot: {
+    {
         title: 'Sweet Spot',
         link: 'https://www.researchcatalogue.net/view/3512750/3512964',
         style: itemStyles.Thought,
@@ -85,7 +85,7 @@ const pageItems = {
         pathSpeed: .00002,
         pathOffset: Math.PI / 2,
     },
-    Agency: {
+    {
         title: 'Agency',
         link: 'https://www.researchcatalogue.net/view/3512750/3512967',
         style: itemStyles.Thought,
@@ -99,7 +99,7 @@ const pageItems = {
         pathSpeed: .0001,
         pathOffset: -Math.PI / 2,
     },
-    SonicSpace: {
+    {
         title: 'Sonic / Space',
         link: 'https://www.researchcatalogue.net/view/3512750/3512971',
         style: itemStyles.Thought,
@@ -113,7 +113,7 @@ const pageItems = {
         pathSpeed: .00007,
         pathOffset: Math.PI,
     },
-    TechnoVoice: {
+    {
         title: 'Techno Voice',
         link: 'https://www.researchcatalogue.net/view/3512750/3512961',
         style: itemStyles.Thought,
@@ -127,7 +127,7 @@ const pageItems = {
         pathSpeed: .00007,
         pathOffset: 0,
     },
-    Inspiration: {
+    {
         title: 'Inspiration',
         link: 'https://www.researchcatalogue.net/view/3512750/3512978',
         style: itemStyles.Inspiration,
@@ -141,7 +141,7 @@ const pageItems = {
         pathSpeed: .00002,
         pathOffset: 0,
     },
-}
+]
 
 const pageItemGroups = {
     Process: {
