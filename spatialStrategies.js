@@ -2,13 +2,8 @@ let canvas;
 
 const items = new Map();
 
-// const controls = {
-//   view: { x: 0, y: 0, zoom: 1 },
-//   viewPos: { prevX: null, prevY: null, isDragging: false },
-// }
-
-let cursorx = 1;
-let cursory = 1;
+let cursorX = 1;
+let cursorY = 1;
 let cursorOnCanvas = true;
 
 const paths = {
@@ -51,23 +46,18 @@ function setup() {
   items.forEach(promptItem => {
     promptItem.loop();
   })
-
-  // canvas.mouseWheel(e => Controls.zoom(controls).worldZoom(e, items))
 }
 
 function draw() {
   background(30)
-  // translate(controls.view.x, controls.view.y);
-  // scale(controls.view.zoom)
 
   let targetX = mouseX;
-  let dx = targetX - cursorx;
-  cursorx += dx * 0.15;
+  let dx = targetX - cursorX;
+  cursorX += dx * 0.15;
 
   let targetY = mouseY;
-  let dy = targetY - cursory;
-  cursory += dy * 0.15;
-
+  let dy = targetY - cursorY;
+  cursorY += dy * 0.15;
 
   // check if cursor is active with position delta,
   if ((abs(dx) > 1 || abs(dy) > 1) && !cursorOnCanvas) {
@@ -86,7 +76,7 @@ function draw() {
 
   // draw cursor
   fill(255, 255, 255, .5)
-  ellipse(cursorx, cursory, 15, 15)
+  ellipse(cursorX, cursorY, 15, 15)
 }
 
 function handleCursorExit() {
@@ -100,90 +90,6 @@ window.mouseClicked = e => items.forEach(promptItem => {
   promptItem.playAudio()
   promptItem.clicked(e)
 });
-// window.mousePressed = e => Controls.move(controls).mousePressed(e)
-// window.mouseDragged = e => Controls.move(controls).mouseDragged(e, items);
-// window.mouseReleased = e => Controls.move(controls).mouseReleased(e)
-
-/*
-class Controls {
-  static move(controls) {
-    function mousePressed(e) {
-      controls.viewPos.isDragging = true;
-      controls.viewPos.prevX = e.clientX;
-      controls.viewPos.prevY = e.clientY;
-    }
-
-    function mouseDragged(e, promptItemToUpdate) {
-      const { prevX, prevY, isDragging } = controls.viewPos;
-      if (!isDragging) return;
-
-      const pos = { x: e.clientX, y: e.clientY };
-      const dx = pos.x - prevX;
-      const dy = pos.y - prevY;
-
-      if (prevX || prevY) {
-        controls.view.x += dx;
-        controls.view.y += dy;
-        controls.viewPos.prevX = pos.x, controls.viewPos.prevY = pos.y
-
-        promptItemToUpdate.forEach(promptItem => {
-          promptItem.offsetPhantomPos(dx, dy)
-        })
-      }
-    }
-
-    function mouseReleased(e) {
-      controls.viewPos.isDragging = false;
-      controls.viewPos.prevX = null;
-      controls.viewPos.prevY = null;
-    }
-
-    return {
-      mousePressed,
-      mouseDragged,
-      mouseReleased
-    }
-  }
-
-  static zoom(controls) {
-    function calcPos(x, y, zoom) {
-      const newX = width - (width * zoom - x);
-      const newY = height - (height * zoom - y);
-      return { x: newX, y: newY }
-    }
-
-
-    function worldZoom(e, promptItemToUpdate) {
-      const { x, y, deltaY } = e;
-      const direction = deltaY > 0 ? -1 : 1;
-      const factor = 0.05;
-      const zoom = 1 * direction * factor;
-
-      const wx = (x - controls.view.x) / (width * controls.view.zoom);
-      const wy = (y - controls.view.y) / (height * controls.view.zoom);
-
-      // DISABLE ZOOM FOR NOW
-      // if (controls.view.zoom + zoom > .3 && controls.view.zoom + zoom < 3) {
-      //   controls.view.x -= wx * width * zoom;
-      //   controls.view.y -= wy * height * zoom;
-      //   controls.view.zoom += zoom;
-
-      //   pageItemsToUpdate.forEach(pageItem => {
-      //     // let { x, y } = calcPos(pageItem.x, pageItem.y, zoom);
-      //     // console.log(x, y);
-      //     // console.log(mouseX, mouseY);
-      //     // pageItem.offsetPhantomPos(x - pageItem.x, y - pageItem.y);
-      //     console.log(controls.view.zoom, controls.view.zoom ** 2)
-      //     // pageItem.soundRadius
-      //   })
-      // }
-
-    }
-
-    return { worldZoom }
-  }
-}
-*/
 
 class PromptItem {
   constructor(props) {
@@ -212,13 +118,12 @@ class PromptItem {
     let { x, y } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
     this.drawnX = this.x + x;
     this.drawnY = this.y + y;
-    // this.phantomSoundRadius = this.soundRadius * controls.view.zoom;
   }
 
   draw() {
     this.updatePos();
 
-    let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorx, cursory);
+    let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorX, cursorY);
     d = this.isActivated ? 0 : d;
     let hoverDistance = constrain(d, this.pointRadius, this.soundRadius);
     let hoverPointRadius = map(hoverDistance, this.pointRadius, this.soundRadius, this.soundRadius, this.soundRadius / 4);
@@ -262,7 +167,6 @@ class PromptItem {
       stroke(255, 255, 255, .6);
       ellipse(this.drawnX, this.drawnY, this.soundRadius * 2, this.soundRadius * 2);
     }
-
   }
 
   loop() {
@@ -283,7 +187,7 @@ class PromptItem {
   }
 
   updateVolume() {
-    let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorx, cursory);
+    let d = dist(this.drawnX - this.x + this.phantomX, this.drawnY - this.y + this.phantomY, cursorX, cursorY);
     d = constrain(d, 0, this.phantomSoundRadius);
     d = this.isActivated ? 0 : d;
     let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
