@@ -43,7 +43,7 @@ const navigationItemProps = [
     {
         title: 'CHAOS PENDULUM',
         type: 'subItem',
-        link: 'https://www.researchcatalogue.net/view/3512750/3539322',
+        link: 'https://www.researchcatalogue.net/view/3512750/3539328',
         style: navigationItemStyles.Output,
         soundURL: 'sounds/test-tone-2.mp3',
         imageUrl: 'images/chaos-pendulum-preview.png',
@@ -71,7 +71,7 @@ const navigationItemProps = [
     {
         title: 'BAGUA',
         type: 'subItem',
-        link: 'https://www.researchcatalogue.net/view/3512750/3539328',
+        link: 'https://www.researchcatalogue.net/view/3512750/3539322',
         style: navigationItemStyles.Output,
         soundURL: 'sounds/test-tone-3.mp3',
         imageUrl: 'images/bagua-preview.png',
