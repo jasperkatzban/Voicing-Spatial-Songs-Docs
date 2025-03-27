@@ -36,10 +36,10 @@ const PATHS = {
 }
 
 const navigationItemStyles = {
-  Inspiration: { color: '#22e6a1' },
-  Thought: { color: '#aa34e0' },
-  Process: { color: '#f5b40f' },
-  Output: { color: '#3351b0' }
+  Inspiration: { color: '#00CE85' },
+  Thought: { color: '#AF00FF' },
+  Process: { color: '#FFB700' },
+  Output: { color: '#1A4EF3' }
 }
 
 function preload() {
@@ -230,6 +230,7 @@ class NavigationItem {
 
   hide() {
     this.navigationState = 'hidden';
+    this.fadeOutAudio()
   }
 
   moveToBackground() {
@@ -314,21 +315,21 @@ class NavigationItem {
           imageMode(CENTER)
           let imageX = this.x;
           let imageY = this.y - 50 - this.pointRadius * 2;
-          let dForImage = constrain(d, this.pointRadius, this.pointRadius * 3)
-          let a = map(dForImage, this.pointRadius, this.pointRadius * 3, .6, 0)
+          let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
+          let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), .7, 0)
           tint(256, 256, 256, a);
           // TODO: fix positioning of different image sizes
           image(this.image, imageX, imageY, 100, 100, 0, 0, this.image.width, this.image.height, COVER);
         }
 
         let hoverColor = color(this.style.color);
-        hoverColor.setAlpha(.2);
+        hoverColor.setAlpha(.3);
         fill(hoverColor);
         ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
         noStroke();
         let mainColor = color(this.style.color);
-        mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .2))
+        mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .5))
         fill(mainColor)
         ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
 
@@ -343,12 +344,13 @@ class NavigationItem {
         stroke(soundRadiusColor);
         ellipse(this.x, this.y, this.soundRadius * 2, this.soundRadius * 2);
 
-        if (d < this.pointRadius * 2) {
-          fill(255, 255, 255, .6)
-          ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
-          noStroke();
-          text(this.title, this.x, this.y + this.pointRadius + 20);
-        }
+
+        let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
+        let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
+        fill(255, 255, 255, a)
+        ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
+        noStroke();
+        text(this.title, this.x, this.y + this.pointRadius + 20);
 
         break;
     }
@@ -372,11 +374,13 @@ class NavigationItem {
   }
 
   updateVolume() {
-    let d = dist(this.x, this.y, cursorX, cursorY);
-    d = constrain(d, 0, this.phantomSoundRadius);
-    let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
-    let a = float(aInt) / 100.0;
-    this.sound.setVolume(a, .1);
+    if (this.navigationState !== 'hidden') {
+      let d = dist(this.x, this.y, cursorX, cursorY);
+      d = constrain(d, 0, this.phantomSoundRadius);
+      let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
+      let a = float(aInt) / 100.0;
+      this.sound.setVolume(a, .1);
+    }
   }
 
   updatePanning() {
@@ -398,7 +402,7 @@ class LinkItem extends NavigationItem {
   clicked(e) {
     // check if mouse click is within item bounds
     let d = dist(e.clientX, e.clientY, this.x, this.y);
-    if (d < this.pointRadius * 2) {
+    if (d < this.soundRadius * (2 / 5)) {
       handleCursorExit();
       window.open(this.link);
     }
@@ -422,7 +426,7 @@ class GroupItem extends NavigationItem {
       }
     } else {
       let d = dist(e.clientX, e.clientY, this.x, this.y);
-      if (d < this.pointRadius * 2) {
+      if (d < this.soundRadius / 4) {
         this.isActiveGroup = true;
         handleGroupEntryClick(this);
       }
