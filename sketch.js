@@ -418,9 +418,18 @@ class LinkItem extends NavigationItem {
     let d = dist(e.clientX, e.clientY, this.x, this.y);
     if (d < this.soundRadius * (2 / 5)) {
       handleCursorExit();
-      window.open(this.link);
+      this.openLinkAfterDelay(this.link)
       itemClickedDuringFrame = true;
     }
+  }
+
+  // TODO: Fade the rest of the scene during this time
+  async openLinkAfterDelay(link) {
+    await new Promise(() => {
+      setTimeout(() => {
+        window.open(link)
+      }, 1000);
+    });
   }
 }
 
