@@ -208,6 +208,7 @@ class NavigationItem {
     this.link = props.link;
     this.sound = props.sound;
     this.image = props.image;
+    this.alwaysShowImage = props.alwaysShowImage;
 
     this.style = props.style;
 
@@ -320,7 +321,12 @@ class NavigationItem {
           let imageX = this.x;
           let imageY = this.y - 50 - this.pointRadius * 2;
           let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
-          let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), .7, 0)
+          let a = 1;
+          if (this.alwaysShowImage) {
+            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), .9, .5)
+          } else {
+            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), .9, 0)
+          }
           tint(256, 256, 256, a);
           // TODO: fix positioning of different image sizes
           image(this.image, imageX, imageY, 100, 100, 0, 0, this.image.width, this.image.height, COVER);
