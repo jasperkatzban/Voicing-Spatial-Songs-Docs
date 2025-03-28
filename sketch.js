@@ -174,7 +174,7 @@ function handleGroupEntryClick(clickedGroupItem) {
       item.show();
     } else if (item == clickedGroupItem) {
       item.hide();
-    } else {
+    } else if (item.type !== 'subItem') {
       // send other navigationItems to background
       item.moveToBackground();
     }
@@ -185,7 +185,7 @@ function handleGroupExitClick(clickedGroupItem) {
   navigationItems.forEach(item => {
     if (clickedGroupItem.subItems.includes(item.key)) {
       item.hide();
-    } else {
+    } else if (item.type !== 'subItem') {
       // restore other navigationItems
       item.moveToForeground();
     }
