@@ -364,9 +364,10 @@ class NavigationItem {
         fill(mainColor)
         ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
 
-        textAlign(CENTER);
+        textAlign(CENTER, TOP);
+        rectMode(CENTER)
         textSize(TEXT_SIZE * canvasScale);
-        text(this.title, this.x, this.y + this.pointRadius + 20);
+        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
 
         /*
         let textRadius = this.soundRadius / 2
@@ -398,7 +399,7 @@ class NavigationItem {
         fill(255, 255, 255, a)
         ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
         noStroke();
-        text(this.title, this.x, this.y + this.pointRadius + 20);
+        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
     }
   }
 
