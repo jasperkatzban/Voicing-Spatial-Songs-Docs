@@ -43,9 +43,6 @@ const itemStyles = {
 
 function preload() {
   promptItems.forEach(promptItem => {
-    if (promptItem.soundURL) {
-      promptItem.sound = loadSound(promptItem.soundURL);
-    }
     items.set(promptItem.key, new PromptItem(promptItem))
   })
 }
@@ -55,10 +52,6 @@ function setup() {
   canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 }
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
-
-  items.forEach(promptItem => {
-    promptItem.loop();
-  })
 }
 
 function windowResized() {
@@ -98,12 +91,6 @@ function draw() {
     }
   }));
 
-  if (cursorOnCanvas) {
-    items.forEach(promptItem => {
-      promptItem.updateAudio();
-    });
-  }
-
   // draw credits text
   fill(100);
   textSize(TEXT_SIZE * canvasScale);
@@ -115,15 +102,7 @@ function draw() {
   ellipse(cursorX, cursorY, 15, 15)
 }
 
-function handleCursorExit() {
-  cursorOnCanvas = false;
-  items.forEach(promptItem => {
-    promptItem.fadeOut();
-  });
-}
-
 window.mouseClicked = e => items.forEach(promptItem => {
-  promptItem.playAudio()
   promptItem.clicked(e)
 });
 
@@ -137,10 +116,9 @@ class PromptItem {
     this.x = 0;
     this.y = 0;
     this.pointRadius = props.pointRadius !== undefined ? props.pointRadius : DEFAULT_PROMPT_POINT_RADIUS;
-    this.soundRadius = props.soundRadius !== undefined ? props.soundRadius : DEFAULT_PROMPT_SOUND_RADIUS;
+    this.hoverRadius = props.hoverRadius !== undefined ? props.hoverRadius : DEFAULT_PROMPT_HOVER_RADIUS;
     this.scaledPointRadius = 0;
-    this.scaledSoundRadius = 0;
-    this.sound = props.sound;
+    this.scaledHoverRadius = 0;
     this.image = props.image;
     this.path = props.path;
     this.pathScale = DEFAULT_PROMPT_PATH_SCALE;
@@ -161,12 +139,12 @@ class PromptItem {
     this.updatePos();
 
     this.scaledPointRadius = this.pointRadius * window.innerHeight;
-    this.scaledSoundRadius = this.soundRadius * window.innerHeight;
+    this.scaledHoverRadius = this.hoverRadius * window.innerHeight;
 
     let d = dist(this.x, this.y, cursorX, cursorY);
     d = this.isActivated ? 0 : d;
-    let hoverDistance = constrain(d, this.scaledPointRadius, this.scaledSoundRadius);
-    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius, this.scaledSoundRadius, this.scaledSoundRadius, 0);
+    let hoverDistance = constrain(d, this.scaledPointRadius, this.scaledHoverRadius);
+    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius, this.scaledHoverRadius, this.scaledHoverRadius, 0);
 
     // hover ellipse
     noStroke();
@@ -180,7 +158,7 @@ class PromptItem {
     let mainColor = color(this.style.color);
     let creditColor = mainColor
 
-    mainColor.setAlpha(map(hoverDistance, 0, this.scaledSoundRadius, 1, 0))
+    mainColor.setAlpha(map(hoverDistance, 0, this.scaledHoverRadius, 1, 0))
     fill(mainColor)
 
     // text render
@@ -188,69 +166,32 @@ class PromptItem {
     rectMode(CENTER)
     textSize(TEXT_SIZE * canvasScale);
     textLeading(TEXT_LEADING * canvasScale);
-    text(this.title, this.x, this.y, this.scaledSoundRadius * 1.7, this.scaledSoundRadius * 3.5);
+    text(this.title, this.x, this.y, this.scaledHoverRadius * 1.7, this.scaledHoverRadius * 3.5);
 
-    creditColor.setAlpha(map(hoverDistance, 0, this.scaledSoundRadius, .7, 0))
+    creditColor.setAlpha(map(hoverDistance, 0, this.scaledHoverRadius, .7, 0))
     fill(creditColor)
-    text(this.credit, this.x, this.y + this.scaledSoundRadius * .7);
+    text(this.credit, this.x, this.y + this.scaledHoverRadius * .7);
 
     if (this.isActivated) {
       fill(255, 255, 255, .6)
-      text(this.title, this.x, this.y, this.scaledSoundRadius * 1.7, this.scaledSoundRadius * 3.5);
+      text(this.title, this.x, this.y, this.scaledHoverRadius * 1.7, this.scaledHoverRadius * 3.5);
     }
 
     this.isHovered = d < this.scaledPointRadius
 
     // outer ring
     noFill();
-    let soundRadiusColor = color(128, 128, 128, .1);
-    let a = map(hoverDistance, 0, this.scaledSoundRadius, .2, .1)
+    let hoverRadiusColor = color(128, 128, 128, .1);
+    let a = map(hoverDistance, 0, this.scaledHoverRadius, .2, .1)
     a = this.isHovered ? .5 : a;
-    soundRadiusColor.setAlpha(a);
-    stroke(soundRadiusColor);
-    ellipse(this.x, this.y, this.scaledSoundRadius * 2, this.scaledSoundRadius * 2);
+    hoverRadiusColor.setAlpha(a);
+    stroke(hoverRadiusColor);
+    ellipse(this.x, this.y, this.scaledHoverRadius * 2, this.scaledHoverRadius * 2);
 
     if (this.isActivated) {
       stroke(255, 255, 255, .3);
-      ellipse(this.x, this.y, this.scaledSoundRadius * 2, this.scaledSoundRadius * 2);
+      ellipse(this.x, this.y, this.scaledHoverRadius * 2, this.scaledHoverRadius * 2);
     }
-  }
-
-  loop() {
-    this.sound.setLoop(true);
-    this.isPlaying = true;
-  }
-
-  playAudio() {
-    if (!this.sound.isPlaying()) {
-      this.sound.setVolume(0);
-      this.sound.play();
-    }
-  }
-
-  updateAudio() {
-    this.updateVolume();
-    this.updatePanning();
-  }
-
-  updateVolume() {
-    let d = dist(this.x, this.y, cursorX, cursorY);
-    d = constrain(d, 0, this.scaledSoundRadius);
-    d = this.isActivated ? 0 : d;
-    let aInt = map(d, 0, this.scaledSoundRadius, 100, 0);
-    let a = float(aInt) / 100.0;
-
-    this.sound.setVolume(a, .1);
-  }
-
-  updatePanning() {
-    let pan = (this.x - width / 2) / (width / 4);
-    pan = constrain(pan, -1, 1)
-    this.sound.pan(pan);
-  }
-
-  fadeOut() {
-    this.sound.setVolume(0, 1.0);
   }
 
   clicked(e) {
