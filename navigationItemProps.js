@@ -1,5 +1,6 @@
 const navigationItemProps = [
     {
+        key: 'PERFORMANCE',
         title: 'PERFORMANCE',
         type: 'group',
         style: navigationItemStyles.Output,
@@ -21,6 +22,7 @@ const navigationItemProps = [
         ]
     },
     {
+        key: 'PERFORMANCE 1',
         title: 'PERFORMANCE 1',
         type: 'subItem',
         link: '',
@@ -35,6 +37,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
+        key: 'PERFORMANCE 2',
         title: 'PERFORMANCE 2',
         type: 'subItem',
         link: '',
@@ -49,6 +52,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
+        key: 'PERFORMANCE 3',
         title: 'PERFORMANCE 3',
         type: 'subItem',
         link: '',
@@ -63,6 +67,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 1 / 3,
     },
     {
+        key: 'PERFORMANCE 4',
         title: 'PERFORMANCE 4',
         type: 'subItem',
         link: '',
@@ -77,6 +82,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 2 / 3,
     },
     {
+        key: 'PERFORMANCE 5',
         title: 'PERFORMANCE 5',
         type: 'subItem',
         link: '',
@@ -91,6 +97,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 3 / 3,
     },
     {
+        key: 'PERFORMANCE 6',
         title: 'PERFORMANCE 6',
         type: 'subItem',
         link: '',
@@ -105,6 +112,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 4 / 3,
     },
     {
+        key: 'PERFORMANCE 7',
         title: 'PERFORMANCE 7',
         type: 'subItem',
         link: '',
@@ -119,6 +127,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 5 / 3,
     },
     {
+        key: 'SPATIAL STRATEGIES',
         title: 'SPATIAL STRATEGIES',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3539951',
@@ -132,6 +141,7 @@ const navigationItemProps = [
         pathOffset: Math.PI / 2,
     },
     {
+        key: 'CHAOS PENDULUM',
         title: 'CHAOS PENDULUM',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539328',
@@ -147,6 +157,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
+        key: `SPACE HALO (HALO D'ESPACE)`,
         title: `SPACE HALO (HALO D'ESPACE)`,
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539325',
@@ -162,6 +173,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 2 / 3,
     },
     {
+        key: 'BAGUA INTERFACE',
         title: 'BAGUA',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539322',
@@ -177,6 +189,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 4 / 3,
     },
     {
+        key: 'MULTI VOICING SPATIAL SONGS',
         title: 'MULTI VOICING SPATIAL SONGS',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512955',
@@ -191,6 +204,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 1.5,
     },
     {
+        key: 'GOING SPATIAL',
         title: 'GOING SPATIAL',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512949',
@@ -204,6 +218,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
+        key: 'INTERFACES',
         title: 'INTERFACES',
         type: 'group',
         style: navigationItemStyles.Process,
@@ -214,9 +229,10 @@ const navigationItemProps = [
         pathScale: .4,
         pathSpeed: .00007,
         pathOffset: Math.PI * 2 / 3,
-        subItems: ['CHAOS PENDULUM', `SPACE HALO (HALO D'ESPACE)`, 'BAGUA']
+        subItems: ['CHAOS PENDULUM', `SPACE HALO (HALO D'ESPACE)`, 'BAGUA INTERFACE']
     },
     {
+        key: 'SPATIAL SONGWRITING EXPERIMENTS',
         title: 'SPATIAL SONGWRITING EXPERIMENTS',
         type: 'group',
         style: navigationItemStyles.Process,
@@ -230,6 +246,7 @@ const navigationItemProps = [
         subItems: ['GHOSTLY VOICE', 'BAGUA EXPERIMENT', 'SWEET SPOT EXPERIMENT', 'LISSAJOUS', '12 BUTTERFLIES']
     },
     {
+        key: 'GHOSTLY VOICE',
         title: 'GHOSTLY VOICE',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
@@ -243,7 +260,8 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        title: 'BAGUA EXPERIMENT',
+        key: 'BAGUA EXPERIMENT',
+        title: 'BAGUA',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -256,7 +274,8 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        title: 'SWEET SPOT EXPERIMENT',
+        key: 'SWEET SPOT EXPERIMENT',
+        title: 'SWEET SPOT',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -269,6 +288,7 @@ const navigationItemProps = [
         pathOffset: Math.PI / 2,
     },
     {
+        key: 'LISSAJOUS',
         title: 'LISSAJOUS',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
@@ -282,6 +302,7 @@ const navigationItemProps = [
         pathOffset: Math.PI,
     },
     {
+        key: '12 BUTTERFLIES',
         title: '12 BUTTERFLIES',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
@@ -295,6 +316,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 3 / 2,
     },
     {
+        key: 'SWEET SPOT THOUGHT',
         title: 'SWEET SPOT',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512964',
@@ -308,6 +330,7 @@ const navigationItemProps = [
         pathOffset: Math.PI / 2,
     },
     {
+        key: 'AGENCY',
         title: 'AGENCY',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512967',
@@ -321,6 +344,7 @@ const navigationItemProps = [
         pathOffset: -Math.PI / 2,
     },
     {
+        key: 'SONIC / SPACE',
         title: 'SONIC / SPACE',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512971',
@@ -334,6 +358,7 @@ const navigationItemProps = [
         pathOffset: Math.PI,
     },
     {
+        key: 'TECHNO VOICE',
         title: 'TECHNO VOICE',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512961',
@@ -347,6 +372,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
+        key: 'INSPIRATION',
         title: 'INSPIRATION',
         type: 'group',
         style: navigationItemStyles.Inspiration,
@@ -360,6 +386,7 @@ const navigationItemProps = [
         subItems: ['INSPIRATION 1', 'INSPIRATION 2', 'INSPIRATION 3']
     },
     {
+        key: 'INSPIRATION 1',
         title: 'INSPIRATION 1',
         type: 'subItem',
         style: navigationItemStyles.Inspiration,
@@ -373,6 +400,7 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
+        key: 'INSPIRATION 2',
         title: 'INSPIRATION 2',
         type: 'subItem',
         style: navigationItemStyles.Inspiration,
@@ -386,6 +414,7 @@ const navigationItemProps = [
         pathOffset: Math.PI * 2 / 3,
     },
     {
+        key: 'INSPIRATION 3',
         title: 'INSPIRATION 3',
         type: 'subItem',
         style: navigationItemStyles.Inspiration,

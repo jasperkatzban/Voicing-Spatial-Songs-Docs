@@ -62,15 +62,15 @@ function preload() {
     }
     switch (navigationItem.type) {
       case "group":
-        navigationItems.set(navigationItem.title, new GroupItem(navigationItem))
+        navigationItems.set(navigationItem.key, new GroupItem(navigationItem))
         break;
       case "link":
-        navigationItems.set(navigationItem.title, new LinkItem(navigationItem))
+        navigationItems.set(navigationItem.key, new LinkItem(navigationItem))
         break;
       case "subItem":
         let subItem = new LinkItem(navigationItem)
         subItem.navigationState = 'hidden'
-        navigationItems.set(navigationItem.title, subItem)
+        navigationItems.set(navigationItem.key, subItem)
 
       // TODO: handle default case
       default:
@@ -169,7 +169,7 @@ function handleCursorExit() {
 
 function handleGroupEntryClick(clickedGroupItem) {
   navigationItems.forEach(item => {
-    if (clickedGroupItem.subItems.includes(item.title)) {
+    if (clickedGroupItem.subItems.includes(item.key)) {
       item.moveToForeground();
       item.show();
     } else if (item == clickedGroupItem) {
@@ -183,7 +183,7 @@ function handleGroupEntryClick(clickedGroupItem) {
 
 function handleGroupExitClick(clickedGroupItem) {
   navigationItems.forEach(item => {
-    if (clickedGroupItem.subItems.includes(item.title)) {
+    if (clickedGroupItem.subItems.includes(item.key)) {
       item.hide();
     } else {
       // restore other navigationItems
@@ -211,6 +211,7 @@ mouseClicked = e => {
 
 class NavigationItem {
   constructor(props) {
+    this.key = props.key;
     this.title = props.title;
     this.type = props.type;
 
