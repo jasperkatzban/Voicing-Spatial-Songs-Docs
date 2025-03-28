@@ -352,9 +352,26 @@ class NavigationItem {
         ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
 
         textAlign(CENTER);
-        textAlign(CENTER);
         textSize(TEXT_SIZE * canvasScale);
         text(this.title, this.x, this.y + this.pointRadius + 20);
+
+        /*
+        let textRadius = this.soundRadius / 2
+        let currentAngle = Math.PI - (textWidth(this.title) / 2) / textRadius;
+
+        for (let i = -1; i < this.title.length; i++) {
+          let charWidth = textWidth(this.title.charAt(i));
+          let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
+          push();
+          translate(this.x, this.y)
+          rotate(currentAngle);
+          translate(0, textRadius);
+          rotate(Math.PI)
+          text(this.title.charAt(i), 0, 0);
+          pop();
+          currentAngle += (charWidth + nextCharWidth) / 2 / textRadius;
+        }
+        */
 
         noFill();
         let soundRadiusColor = color(128, 128, 128, .1);
