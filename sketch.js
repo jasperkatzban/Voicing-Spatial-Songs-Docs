@@ -172,13 +172,22 @@ function handleGroupEntryClick(clickedGroupItem) {
     if (clickedGroupItem.subItems.includes(item.key)) {
       item.moveToForeground();
       item.show();
-    } else if (item == clickedGroupItem) {
-      item.hide();
     } else if (item.type !== 'subItem') {
       // send other navigationItems to background
       item.moveToBackground();
+    } else {
+      item.hide();
+    }
+
+    if (item.type == 'group') {
+      if (item == clickedGroupItem) {
+        item.isActiveGroup = true;
+      } else {
+        item.isActiveGroup = false;
+      }
     }
   })
+  clickedGroupItem.hide();
 }
 
 function handleGroupExitClick(clickedGroupItem) {
@@ -188,6 +197,10 @@ function handleGroupExitClick(clickedGroupItem) {
     } else if (item.type !== 'subItem') {
       // restore other navigationItems
       item.moveToForeground();
+    }
+
+    if (item.type == 'group') {
+      item.isActiveGroup = false;
     }
   })
 }
@@ -386,8 +399,6 @@ class NavigationItem {
         ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
         noStroke();
         text(this.title, this.x, this.y + this.pointRadius + 20);
-
-        break;
     }
   }
 
@@ -489,13 +500,11 @@ class GroupItem extends NavigationItem {
       let d = dist(e.clientX, e.clientY, canvasCenter.x, canvasCenter.y);
       // if clicking outside the center area, exit the group
       if (d > window.innerHeight / 3) {
-        this.isActiveGroup = false;
         handleGroupExitClick(this);
       }
     } else {
       let d = dist(e.clientX, e.clientY, this.x, this.y);
       if (d < this.soundRadius / 4) {
-        this.isActiveGroup = true;
         handleGroupEntryClick(this);
         itemClickedDuringFrame = true;
       }
