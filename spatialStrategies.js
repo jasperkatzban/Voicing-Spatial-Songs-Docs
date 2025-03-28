@@ -39,7 +39,9 @@ const itemStyles = {
 
 function preload() {
   promptItems.forEach(promptItem => {
-    promptItem.sound = loadSound(promptItem.soundURL);
+    if (promptItem.soundURL) {
+      promptItem.sound = loadSound(promptItem.soundURL);
+    }
     items.set(promptItem.key, new PromptItem(promptItem))
   })
 }

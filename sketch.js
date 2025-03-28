@@ -47,9 +47,11 @@ function preload() {
   cursorImage = loadImage('images/cursor-corona.png')
 
   navigationItemProps.forEach(navigationItem => {
-    navigationItem.sound = loadSound(navigationItem.soundURL);
-    if (navigationItem.imageUrl !== undefined) {
-      navigationItem.image = loadImage(navigationItem.imageUrl);
+    if (navigationItem.soundURL) {
+      navigationItem.sound = loadSound(navigationItem.soundURL);
+    }
+    if (navigationItem.imageURL) {
+      navigationItem.image = loadImage(navigationItem.imageURL);
     }
     switch (navigationItem.type) {
       case "group":
@@ -367,40 +369,52 @@ class NavigationItem {
   }
 
   loop() {
-    this.sound.setLoop(true);
-    this.isPlaying = true;
+    if (this.sound) {
+      this.sound.setLoop(true);
+      this.isPlaying = true;
+    }
   }
 
   playAudio() {
-    if (!this.sound.isPlaying()) {
-      this.sound.setVolume(0);
-      this.sound.play();
+    if (this.sound) {
+      if (!this.sound.isPlaying()) {
+        this.sound.setVolume(0);
+        this.sound.play();
+      }
     }
   }
 
   updateAudio() {
-    this.updateVolume();
-    this.updatePanning();
+    if (this.sound) {
+      this.updateVolume();
+      this.updatePanning();
+    }
   }
 
   updateVolume() {
-    if (this.navigationState !== 'hidden') {
-      let d = dist(this.x, this.y, cursorX, cursorY);
-      d = constrain(d, 0, this.phantomSoundRadius);
-      let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
-      let a = float(aInt) / 100.0;
-      this.sound.setVolume(a, .1);
+    if (this.sound) {
+      if (this.navigationState !== 'hidden') {
+        let d = dist(this.x, this.y, cursorX, cursorY);
+        d = constrain(d, 0, this.phantomSoundRadius);
+        let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
+        let a = float(aInt) / 100.0;
+        this.sound.setVolume(a, .1);
+      }
     }
   }
 
   updatePanning() {
-    let pan = (this.x - width / 2) / (width / 4);
-    pan = constrain(pan, -1, 1)
-    this.sound.pan(pan);
+    if (this.sound) {
+      let pan = (this.x - width / 2) / (width / 4);
+      pan = constrain(pan, -1, 1)
+      this.sound.pan(pan);
+    }
   }
 
   fadeOutAudio() {
-    this.sound.setVolume(0, 1.0);
+    if (this.sound) {
+      this.sound.setVolume(0, 1.0);
+    }
   }
 
   clicked(e) {
