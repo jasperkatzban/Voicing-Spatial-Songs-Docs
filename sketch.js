@@ -328,8 +328,6 @@ class NavigationItem {
 
         if (this.image) {
           imageMode(CENTER)
-          let imageX = this.x;
-          let imageY = this.y - 50 - this.pointRadius * 2;
           let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
           let a = 1;
           if (this.alwaysShowImage) {
@@ -339,7 +337,7 @@ class NavigationItem {
           }
           tint(256, 256, 256, a);
           // TODO: fix positioning of different image sizes
-          image(this.image, imageX, imageY, 100, 100, 0, 0, this.image.width, this.image.height, COVER);
+          image(this.image, this.x, this.y, this.soundRadius, this.soundRadius, 0, 0, this.image.width, this.image.height, COVER);
         }
 
         let hoverColor = color(this.style.color);
