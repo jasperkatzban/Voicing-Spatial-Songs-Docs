@@ -28,8 +28,15 @@ const PATHS = {
     return { x, y, t };
   },
   ROSE_LEFT: (scale, speed, offset) => {
-    let r = scale * window.innerHeight * sin(millis() * speed);
-    let t = millis() * speed / 3 + offset;
+    let r = scale * window.innerHeight * sin(millis() * speed + offset);
+    let t = (millis() * speed + offset) / 3;
+    let x = r * sin(t);
+    let y = r * cos(t);
+    return { x, y, t };
+  },
+  ROSE_RIGHT: (scale, speed, offset) => {
+    let r = scale * window.innerHeight * sin(millis() * speed + offset);
+    let t = (-millis() * speed - offset) / 3;
     let x = r * sin(t);
     let y = r * cos(t);
     return { x, y, t };
