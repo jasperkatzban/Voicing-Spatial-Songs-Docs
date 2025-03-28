@@ -7,22 +7,26 @@ const items = new Map();
 let cursorX = 1;
 let cursorY = 1;
 let cursorOnCanvas = true;
-let canvasScale = window.innerHeight / 800;;
+let canvasScale = window.innerHeight / 800;
+
+let itemMotion = true;
+let motionMillis = 0;
+let millisPaused = 0
 
 const TEXT_SIZE = 15;
 const TEXT_LEADING = 18;
 
 const PATHS = {
   ROSE_LEFT: (scale, speed, offset) => {
-    let r = scale * window.innerHeight * sin(millis() * speed);
-    let t = (millis() * speed + offset) / 3;
+    let r = scale * window.innerHeight * sin(motionMillis * speed + offset);
+    let t = (motionMillis * speed + offset) / 3;
     let x = r * sin(t);
     let y = r * cos(t);
     return { x, y };
   },
   ROSE_RIGHT: (scale, speed, offset) => {
-    let r = scale * window.innerHeight * sin(millis() * speed);
-    let t = (millis() * speed + offset) / 3;
+    let r = scale * window.innerHeight * sin(-motionMillis * speed - offset);
+    let t = (-motionMillis * speed - offset) / 3;
     let x = r * sin(-t);
     let y = r * cos(-t);
     return { x, y };
@@ -68,20 +72,31 @@ function draw() {
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
-  cursorX += dx * 0.15;
+  cursorX += dx * 0.3;
 
   let targetY = mouseY;
   let dy = targetY - cursorY;
-  cursorY += dy * 0.15;
+  cursorY += dy * 0.3;
+
+
+  if (itemMotion) {
+    motionMillis = millis() - millisPaused;
+  } else {
+    millisPaused = millis() - motionMillis;
+  }
 
   // check if cursor is active with position delta,
   if ((abs(dx) > 1 || abs(dy) > 1) && !cursorOnCanvas) {
     cursorOnCanvas = true;
   }
 
-  items.forEach(promptItem => {
+  itemMotion = true;
+  console.log(items.forEach(promptItem => {
     promptItem.draw()
-  });
+    if (promptItem.isHovered) {
+      itemMotion = false;
+    }
+  }));
 
   if (cursorOnCanvas) {
     items.forEach(promptItem => {
@@ -89,6 +104,11 @@ function draw() {
     });
   }
 
+  // draw credits text
+  fill(100);
+  textSize(TEXT_SIZE * canvasScale);
+  textAlign(CENTER, BASELINE)
+  text("Spatial Prompts by SØSTR and others.", window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
   fill(255, 255, 255, .5)
@@ -110,9 +130,8 @@ window.mouseClicked = e => items.forEach(promptItem => {
 class PromptItem {
   constructor(props) {
     this.title = props.title;
+    this.credit = props.credit;
     this.style = props.style;
-    // this.originX(props.x !== undefined ? props.x * window.innerHeight : 0) + 0 * canvasCenter.x;
-    // this.originY(props.x !== undefined ? props.x * window.innerHeight : 0) + 0 * canvasCenter.x;
     this.originX = props.x;
     this.originY = props.y;
     this.x = 0;
@@ -124,17 +143,18 @@ class PromptItem {
     this.sound = props.sound;
     this.image = props.image;
     this.path = props.path;
-    this.pathScale = props.pathScale !== undefined ? props.pathScale : DEFAULT_PROMPT_PATH_SCALE;
-    this.pathSpeed = props.pathSpeed !== undefined ? props.pathSpeed : DEFAULT_PROMPT_PATH_SPEED;
-    this.pathOffset = props.pathOffset !== undefined ? props.pathOffset : DEFAULT_PROMPT_PATH_OFFSET;
+    this.pathScale = DEFAULT_PROMPT_PATH_SCALE;
+    this.pathSpeed = DEFAULT_PROMPT_PATH_SPEED;
+    this.pathOffset = props.pathOffset;
 
+    this.isHovered = false;
     this.isActivated = false;
   }
 
   updatePos() {
     let { x: pathX, y: pathY } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
-    this.x = this.originX * window.innerHeight + canvasCenter.x; + pathX;
-    this.y = this.originY * window.innerHeight + canvasCenter.y; + pathY;
+    this.x = this.originX * window.innerHeight + canvasCenter.x + pathX;
+    this.y = this.originY * window.innerHeight + canvasCenter.y + pathY;
   }
 
   draw() {
@@ -146,7 +166,7 @@ class PromptItem {
     let d = dist(this.x, this.y, cursorX, cursorY);
     d = this.isActivated ? 0 : d;
     let hoverDistance = constrain(d, this.scaledPointRadius, this.scaledSoundRadius);
-    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius, this.scaledSoundRadius, this.scaledSoundRadius, this.scaledSoundRadius / 4);
+    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius, this.scaledSoundRadius, this.scaledSoundRadius, 0);
 
     // hover ellipse
     noStroke();
@@ -158,6 +178,7 @@ class PromptItem {
     // text fill color
     noStroke();
     let mainColor = color(this.style.color);
+    let creditColor = mainColor
 
     mainColor.setAlpha(map(hoverDistance, 0, this.scaledSoundRadius, 1, 0))
     fill(mainColor)
@@ -167,18 +188,24 @@ class PromptItem {
     rectMode(CENTER)
     textSize(TEXT_SIZE * canvasScale);
     textLeading(TEXT_LEADING * canvasScale);
-    text(this.title, this.x, this.y, this.scaledSoundRadius * 1.5, this.scaledSoundRadius * 3.5);
+    text(this.title, this.x, this.y, this.scaledSoundRadius * 1.7, this.scaledSoundRadius * 3.5);
+
+    creditColor.setAlpha(map(hoverDistance, 0, this.scaledSoundRadius, .7, 0))
+    fill(creditColor)
+    text(this.credit, this.x, this.y + this.scaledSoundRadius * .7);
 
     if (this.isActivated) {
       fill(255, 255, 255, .6)
-      text(this.title, this.x, this.y, this.scaledSoundRadius * 1.5, this.scaledSoundRadius * 3.5);
+      text(this.title, this.x, this.y, this.scaledSoundRadius * 1.7, this.scaledSoundRadius * 3.5);
     }
+
+    this.isHovered = d < this.scaledPointRadius
 
     // outer ring
     noFill();
     let soundRadiusColor = color(128, 128, 128, .1);
     let a = map(hoverDistance, 0, this.scaledSoundRadius, .2, .1)
-    a = d < this.scaledPointRadius ? .5 : a;
+    a = this.isHovered ? .5 : a;
     soundRadiusColor.setAlpha(a);
     stroke(soundRadiusColor);
     ellipse(this.x, this.y, this.scaledSoundRadius * 2, this.scaledSoundRadius * 2);
