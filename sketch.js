@@ -10,6 +10,9 @@ let canvasScale = window.innerHeight / 800;
 
 const TEXT_SIZE = 15;
 
+const MAX_TRAIL_LENGTH = 200;
+const MAX_TRAIL_PARTICLES = 20;
+
 let audioEnabled = false;
 let firstInteraction = false;
 let itemClickedDuringFrame = false;
@@ -163,7 +166,6 @@ function handleCursorExit() {
   cursorOnCanvas = false;
   navigationItems.forEach(navigationItem => {
     navigationItem.fadeOutAudio();
-    navigationItem.trail = [];
   });
 }
 
@@ -235,9 +237,6 @@ class NavigationItem {
 
     this.style = props.style;
 
-    this.x = window.innerWidth / 2;
-    this.y = window.innerHeight / 2;
-
     this.pointRadius = props.pointRadius;
     this.soundRadius = props.soundRadius;
     this.phantomSoundRadius = props.soundRadius;
@@ -246,27 +245,51 @@ class NavigationItem {
     this.pathSpeed = props.pathSpeed;
     this.pathOffset = props.pathOffset;
 
-    this.trail = [];
+    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
+    this.x = window.innerWidth / 2 + pathX;
+    this.y = window.innerHeight / 2 + pathY;
+
+    this.trail = this.generateNewTrail();
     this.logTrailCounter = 0;
 
     this.navigationState = 'foreground';
   }
 
   show() {
+    this.trail = this.generateNewTrail();
     this.navigationState = 'foreground';
   }
 
   hide() {
+    this.trail = [];
     this.navigationState = 'hidden';
     this.fadeOutAudio()
   }
 
   moveToBackground() {
+    console.log('backgrounded', this.title);
+    this.trail = [];
     this.navigationState = 'background';
   }
 
   moveToForeground() {
+    console.log('fg', this.title);
+    this.trail = this.generateNewTrail();
     this.navigationState = 'foreground';
+  }
+
+  generateNewTrail() {
+    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
+    let targetX = window.innerWidth / 2 + pathX;
+    let targetY = window.innerHeight / 2 + pathY;
+    return new Array(MAX_TRAIL_LENGTH).fill({ x: targetX, y: targetY });
+  }
+
+  getInitialTrailEntry() {
+    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
+    let targetX = window.innerWidth / 2 + pathX;
+    let targetY = window.innerHeight / 2 + pathY;
+    return { x: targetX, y: targetY };
   }
 
   updatePos() {
@@ -280,9 +303,8 @@ class NavigationItem {
         targetX = canvasCenter.x + pathX;
         targetY = canvasCenter.y + pathY;
 
-        // TODO: wait until state change has occured to show / log trails
-        this.trail.push({ x: this.x, y: this.y })
-        if (this.trail.length > 1000) {
+        this.trail.push(this.getInitialTrailEntry());
+        if (this.trail.length > MAX_TRAIL_LENGTH) {
           this.trail.splice(0, 1);
         }
         break;
@@ -291,20 +313,17 @@ class NavigationItem {
         // TODO: add random offset to theta
         targetX = sin(pathT) * window.innerWidth * 2 / 5 + pathX * .1 + canvasCenter.x;
         targetY = cos(pathT) * window.innerHeight * 2 / 5 + pathY * .1 + canvasCenter.y;
-        this.trail = []
-
         break;
 
       case 'activeGroup':
         targetX = canvasCenter.x;
         targetY = canvasCenter.y;
-
-        this.trail = []
         break;
+
+      case 'hidden':
+        break
 
       default:
-        this.trail = []
-        break;
     }
 
     // LERP between target position and current position
@@ -326,14 +345,18 @@ class NavigationItem {
       default:
         // trails
         let trailColor = color(this.style.color)
-        trailColor.setAlpha(.01)
-        fill(trailColor)
+
         noStroke()
 
-        for (let i = this.trail.length - 1; i > 29; i -= 30) {
+        let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
+        for (let i = this.trail.length - 1; i > frameIntervalToDrawTrail - 1; i -= frameIntervalToDrawTrail) {
           let step = this.trail[i];
-          let r = map(i, 0, this.trail.length, 0, this.soundRadius)
-          ellipse(step.x, step.y, r, r);
+          let r = map(i, 0, this.trail.length, this.soundRadius * 2, this.pointRadius)
+
+          let a = map(i, 0, this.trail.length, 0, .02)
+          trailColor.setAlpha(a)
+          fill(trailColor)
+          ellipse(step.x, step.y, r * 2, r * 2);
         }
 
         // calculate distance
