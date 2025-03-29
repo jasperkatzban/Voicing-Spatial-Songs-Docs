@@ -9,6 +9,7 @@ let cursorImage;
 let canvasScale = window.innerHeight / 800;
 
 const TEXT_SIZE = 15;
+const TEXT_LEADING = 18;
 
 const MAX_TRAIL_LENGTH = 200;
 const MAX_TRAIL_PARTICLES = 20;
@@ -267,13 +268,11 @@ class NavigationItem {
   }
 
   moveToBackground() {
-    console.log('backgrounded', this.title);
     this.trail = [];
     this.navigationState = 'background';
   }
 
   moveToForeground() {
-    console.log('fg', this.title);
     this.trail = this.generateNewTrail();
     this.navigationState = 'foreground';
   }
@@ -420,29 +419,54 @@ class NavigationItem {
         textSize(TEXT_SIZE * canvasScale);
         text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
 
-        /*
-        let textRadius = this.soundRadius / 2
-        let currentAngle = Math.PI - (textWidth(this.title) / 2) / textRadius;
-
-        for (let i = -1; i < this.title.length; i++) {
-          let charWidth = textWidth(this.title.charAt(i));
-          let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
-          push();
-          translate(this.x, this.y)
-          rotate(currentAngle);
-          translate(0, textRadius);
-          rotate(Math.PI)
-          text(this.title.charAt(i), 0, 0);
-          pop();
-          currentAngle += (charWidth + nextCharWidth) / 2 / textRadius;
-        }
-        */
-
         let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
         let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
         fill(255, 255, 255, a)
-        noStroke();
         text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
+
+      /*
+      let textRadius = this.soundRadius / 2
+      let currentAngle = Math.PI - (textWidth(this.title) / 2) / textRadius;
+
+      for (let i = -1; i < this.title.length; i++) {
+        let charWidth = textWidth(this.title.charAt(i));
+        let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
+
+        push();
+        translate(this.x, this.y)
+        rotate(currentAngle);
+        translate(0, textRadius + TEXT_LEADING);
+        rotate(Math.PI)
+        text(this.title.charAt(i), 0, 0);
+
+        fill(255, 255, 255, a)
+        text(this.title.charAt(i), 0, 0);
+        pop();
+
+        currentAngle += (charWidth + nextCharWidth) / 2 / textRadius;
+      }
+
+      currentAngle = (textWidth(this.title) / 2) / textRadius;
+
+      for (let i = -1; i < this.title.length; i++) {
+        let charWidth = textWidth(this.title.charAt(i));
+        let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
+
+        push();
+        translate(this.x, this.y)
+        rotate(currentAngle);
+        translate(0, textRadius + TEXT_SIZE * .42);
+        text(this.title.charAt(i), 0, 0);
+
+        fill(255, 255, 255, a)
+        text(this.title.charAt(i), 0, 0);
+        pop();
+
+        currentAngle -= (charWidth + nextCharWidth) / 2 / textRadius;
+      }
+    */
+
+
     }
   }
 
