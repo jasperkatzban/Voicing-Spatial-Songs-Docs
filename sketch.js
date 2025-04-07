@@ -11,7 +11,7 @@ let canvasScale = window.innerHeight / 800;
 const TEXT_SIZE = 15;
 const TEXT_LEADING = 18;
 
-const MAX_TRAIL_LENGTH = 200;
+const MAX_TRAIL_LENGTH = 300;
 const MAX_TRAIL_PARTICLES = 20;
 
 let audioEnabled = false;
@@ -480,7 +480,7 @@ class NavigationItem {
           let step = this.trail[i];
           let r = map(i, 0, this.trail.length, this.soundRadius * 2, this.pointRadius)
 
-          let a = map(i, 0, this.trail.length, 0, .1)
+          let a = map(i, 0, this.trail.length, 0, .1) /* + cos(-millis() * .0005 - i * Math.PI * 5 / 6) * .01 */
           trailColor.setAlpha(a)
           fill(trailColor)
           ellipse(step.x + window.innerWidth / 2, step.y + window.innerHeight / 2, r * 2, r * 2);
