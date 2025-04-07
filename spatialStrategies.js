@@ -34,11 +34,11 @@ const PATHS = {
 }
 
 const itemStyles = {
-  Default: { color: '#22e6a1' },
-  Center: { color: '#22e6a1' },
-  Inner: { color: '#22e6b1' },
-  Outer: { color: '#22e6d5' },
-  Outest: { color: '#22e6e6' },
+  Default: { color: '#1B50F3' },
+  Center: { color: '#1B50F3' },
+  Inner: { color: '#1374D3' },
+  Outer: { color: '#0E90BB' },
+  Outest: { color: '#07ADA2' },
 }
 
 function preload() {
@@ -61,7 +61,7 @@ function windowResized() {
 }
 
 function draw() {
-  background(30)
+  background(255)
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -98,8 +98,8 @@ function draw() {
   text("Spatial Prompts by SØSTR and others.", window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
-  fill(255, 255, 255, .5)
-  ellipse(cursorX, cursorY, 15, 15)
+  fill(0, 0, 0, .8)
+  ellipse(cursorX, cursorY, 20, 20)
 }
 
 window.mouseClicked = e => items.forEach(promptItem => {
@@ -149,7 +149,10 @@ class PromptItem {
     // hover ellipse
     noStroke();
     let hoverColor = color(this.style.color);
-    hoverColor.setAlpha(.1);
+    hoverColor.setAlpha(.05);
+    if (this.isActivated) {
+      hoverColor.setAlpha(.1);
+    }
     fill(hoverColor);
     ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
@@ -168,30 +171,20 @@ class PromptItem {
     textLeading(TEXT_LEADING * canvasScale);
     text(this.title, this.x, this.y, this.scaledHoverRadius * 1.7, this.scaledHoverRadius * 3.5);
 
-    creditColor.setAlpha(map(hoverDistance, 0, this.scaledHoverRadius, .7, 0))
+    creditColor.setAlpha(map(hoverDistance, 0, this.scaledHoverRadius, 1, 0))
     fill(creditColor)
     text(this.credit, this.x, this.y + this.scaledHoverRadius * .7);
-
-    if (this.isActivated) {
-      fill(255, 255, 255, .6)
-      text(this.title, this.x, this.y, this.scaledHoverRadius * 1.7, this.scaledHoverRadius * 3.5);
-    }
 
     this.isHovered = d < this.scaledPointRadius
 
     // outer ring
     noFill();
-    let hoverRadiusColor = color(128, 128, 128, .1);
-    let a = map(hoverDistance, 0, this.scaledHoverRadius, .2, .1)
+    let hoverRadiusColor = color(this.style.color);
+    let a = map(hoverDistance, 0, this.scaledHoverRadius, 1.0, .2)
     a = this.isHovered ? .5 : a;
     hoverRadiusColor.setAlpha(a);
     stroke(hoverRadiusColor);
     ellipse(this.x, this.y, this.scaledHoverRadius * 2, this.scaledHoverRadius * 2);
-
-    if (this.isActivated) {
-      stroke(255, 255, 255, .3);
-      ellipse(this.x, this.y, this.scaledHoverRadius * 2, this.scaledHoverRadius * 2);
-    }
   }
 
   clicked(e) {
