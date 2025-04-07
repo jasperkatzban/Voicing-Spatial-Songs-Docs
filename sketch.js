@@ -51,7 +51,7 @@ const PATHS = {
 const navigationItemStyles = {
   Inspiration: { color: '#00CE85' },
   Thought: { color: '#AF00FF' },
-  Process: { color: '#E99700' },
+  Process: { color: '#FFA100' },
   Output: { color: '#1A4EF3' }
 }
 
@@ -342,62 +342,68 @@ class NavigationItem {
   draw() {
     this.updatePos();
 
+    // set colors
+    let mainColor = color(this.style.color);
+
     switch (this.navigationState) {
       case 'hidden':
         // don't draw if the item is hidden
         break;
 
+      case 'background':
+        mainColor.setAlpha(.2);
+        fill(mainColor)
+        ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
+        break
+
       default:
-        // calculate distance
+        // calculate distance to cursor
         let d = dist(this.x, this.y, cursorX, cursorY);
         d = constrain(d, 0, this.soundRadius);
+        let dScaled = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
 
-        // outer circle
+        // draw outer circle
         noFill();
-        let soundRadiusColor = color(128, 128, 128, .1);
-        soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .2, 0))
+        // let soundRadiusColor = mainColor
+        let soundRadiusColor = color(255, 255, 255);
+        soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .5, 0))
         stroke(soundRadiusColor);
         ellipse(this.x, this.y, this.soundRadius * 2, this.soundRadius * 2);
 
-        // changing indicator radius when hovering
-        let hoverPointRadius = map(d, 0, this.soundRadius, this.soundRadius / 2, this.pointRadius);
-
+        // change hover indicator size and opacity on hover
         let hoverColor = color(this.style.color);
         hoverColor.setAlpha(.3);
+        let hoverPointRadius;
+        if (this.image) {
+          hoverPointRadius = map(d, this.pointRadius / 2, this.soundRadius, this.soundRadius, this.pointRadius);
+          hoverPointRadius = constrain(hoverPointRadius, this.pointRadius, this.soundRadius * .75);
+        } else {
+          hoverPointRadius = map(d, 0, this.soundRadius, this.soundRadius / 2, this.pointRadius);
+        }
 
-        // let mainColor = color(this.style.color);
-        let mainColor = color(255, 255, 255);
+        // draw hover indicator
+        noStroke();
+        fill(hoverColor);
+        ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
         // render image
         if (this.image) {
-          noStroke();
-          fill(hoverColor);
-          hoverPointRadius = map(d, this.pointRadius / 2, this.soundRadius, this.soundRadius, this.pointRadius);
-          hoverPointRadius = constrain(hoverPointRadius, this.pointRadius, this.soundRadius);
-          ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
-
           imageMode(CENTER)
-          let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
           let a = 1;
           if (this.alwaysShowImage) {
-            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1.0, .8)
+            a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1.0, .8)
           } else {
-            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1.0, 0)
+            a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1.0, 0)
           }
           tint(256, 256, 256, a);
-          // TODO: fix positioning of different image sizes
           image(this.image, this.x, this.y, this.pointRadius * 2, this.pointRadius * 2, 0, 0, this.image.width, this.image.height, COVER);
-        } else { // otherwise render dot
-          // mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .5))
-          noStroke();
+        } else { // otherwise draw dot
           fill(mainColor)
           ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
-          fill(hoverColor);
-          ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
-          let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
-          let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
-          fill(0, 0, 0, a)
+          // fade dot to 
+          let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
+          fill(255, 255, 255, a)
           ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
         }
 
@@ -408,54 +414,52 @@ class NavigationItem {
         textSize(TEXT_SIZE * canvasScale);
         text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
 
-        let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
-        let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
-        fill(0, 0, 0, a)
+        // fade text to white on hover
+        let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
+        fill(255, 255, 255, a)
         text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
 
       /*
       let textRadius = this.soundRadius / 2
       let currentAngle = Math.PI - (textWidth(this.title) / 2) / textRadius;
-
+ 
       for (let i = -1; i < this.title.length; i++) {
         let charWidth = textWidth(this.title.charAt(i));
         let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
-
+ 
         push();
         translate(this.x, this.y)
         rotate(currentAngle);
         translate(0, textRadius + TEXT_LEADING);
         rotate(Math.PI)
         text(this.title.charAt(i), 0, 0);
-
+ 
         fill(255, 255, 255, a)
         text(this.title.charAt(i), 0, 0);
         pop();
-
+ 
         currentAngle += (charWidth + nextCharWidth) / 2 / textRadius;
       }
-
+ 
       currentAngle = (textWidth(this.title) / 2) / textRadius;
-
+ 
       for (let i = -1; i < this.title.length; i++) {
         let charWidth = textWidth(this.title.charAt(i));
         let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
-
+ 
         push();
         translate(this.x, this.y)
         rotate(currentAngle);
         translate(0, textRadius + TEXT_SIZE * .42);
         text(this.title.charAt(i), 0, 0);
-
+ 
         fill(255, 255, 255, a)
         text(this.title.charAt(i), 0, 0);
         pop();
-
+ 
         currentAngle -= (charWidth + nextCharWidth) / 2 / textRadius;
       }
     */
-
-
     }
   }
 
@@ -534,7 +538,7 @@ class NavigationItem {
   }
 
   clicked(e) {
-    // only handle click action if no other items have been clicked
+    // only handle click action if no other items have been clicked and items are visible
     if (!itemClickedDuringFrame) {
       this.handleClick(e)
     }
@@ -549,6 +553,7 @@ class LinkItem extends NavigationItem {
   constructor(props) {
     super(props)
   }
+
   handleClick(e) {
     // check if mouse click is within item bounds
     let d = dist(e.clientX, e.clientY, this.x, this.y);
