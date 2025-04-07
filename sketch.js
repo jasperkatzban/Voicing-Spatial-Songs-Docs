@@ -18,6 +18,7 @@ let audioEnabled = false;
 let firstInteraction = false;
 let itemClickedDuringFrame = false;
 
+// TODO: make generate via unit circle; scale position to canvas afterwards
 const PATHS = {
   ORBIT_LEFT: (scale, speed, offset) => {
     let x = scale * window.innerHeight * sin(millis() * speed + offset);
@@ -279,23 +280,19 @@ class NavigationItem {
 
   generateNewTrail() {
     let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
-    let targetX = window.innerWidth / 2 + pathX;
-    let targetY = window.innerHeight / 2 + pathY;
-    return new Array(MAX_TRAIL_LENGTH).fill({ x: targetX, y: targetY });
+    return new Array(MAX_TRAIL_LENGTH).fill({ x: pathX, y: pathY });
   }
 
   getInitialTrailEntry() {
     let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
-    let targetX = window.innerWidth / 2 + pathX;
-    let targetY = window.innerHeight / 2 + pathY;
-    return { x: targetX, y: targetY };
+    return { x: pathX, y: pathY };
   }
 
   updatePos() {
     let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
 
-    let targetX = canvasCenter.x;
-    let targetY = canvasCenter.y;
+    let targetX;
+    let targetY;
 
     switch (this.navigationState) {
       case 'foreground':
@@ -320,9 +317,13 @@ class NavigationItem {
         break;
 
       case 'hidden':
+        targetX = canvasCenter.x;
+        targetY = canvasCenter.y;
         break
 
       default:
+        targetX = canvasCenter.x;
+        targetY = canvasCenter.y;
     }
 
     // LERP between target position and current position
@@ -355,7 +356,7 @@ class NavigationItem {
           let a = map(i, 0, this.trail.length, 0, .02)
           trailColor.setAlpha(a)
           fill(trailColor)
-          ellipse(step.x, step.y, r * 2, r * 2);
+          ellipse(step.x + window.innerWidth / 2, step.y + window.innerHeight / 2, r * 2, r * 2);
         }
 
         // calculate distance
