@@ -51,7 +51,7 @@ const PATHS = {
 const navigationItemStyles = {
   Inspiration: { color: '#00CE85' },
   Thought: { color: '#AF00FF' },
-  Process: { color: '#FFB700' },
+  Process: { color: '#E99700' },
   Output: { color: '#1A4EF3' }
 }
 
@@ -102,7 +102,7 @@ function windowResized() {
 }
 
 function draw() {
-  background(30);
+  background(255);
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -135,9 +135,14 @@ function draw() {
 
   // draw cursor halo
   imageMode(CENTER)
-  tint(256, 256, 256, 1);
   image(cursorImage, cursorX, cursorY, 200, 200);
 
+  // draw trails in background first
+  navigationItems.forEach(navigationItem => {
+    navigationItem.drawTrail();
+  });
+
+  // then draw items
   navigationItems.forEach(navigationItem => {
     navigationItem.draw()
   });
@@ -157,8 +162,8 @@ function draw() {
   text('Voicing Spatial Songs Documentation Demo', window.innerWidth - 20, window.innerHeight - 20);
 
   // draw cursor dot 
-  fill(255, 255, 255, .5)
-  ellipse(cursorX, cursorY, 15, 15)
+  fill(0, 0, 0, .8)
+  ellipse(cursorX, cursorY, 20, 20)
 
   // set flag to false once all draw updates have occured
   itemClickedDuringFrame = false;
@@ -343,22 +348,6 @@ class NavigationItem {
         break;
 
       default:
-        // trails
-        let trailColor = color(this.style.color)
-
-        noStroke()
-
-        let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
-        for (let i = this.trail.length - 1; i > frameIntervalToDrawTrail - 1; i -= frameIntervalToDrawTrail) {
-          let step = this.trail[i];
-          let r = map(i, 0, this.trail.length, this.soundRadius * 2, this.pointRadius)
-
-          let a = map(i, 0, this.trail.length, 0, .02)
-          trailColor.setAlpha(a)
-          fill(trailColor)
-          ellipse(step.x + window.innerWidth / 2, step.y + window.innerHeight / 2, r * 2, r * 2);
-        }
-
         // calculate distance
         let d = dist(this.x, this.y, cursorX, cursorY);
         d = constrain(d, 0, this.soundRadius);
@@ -376,13 +365,12 @@ class NavigationItem {
         let hoverColor = color(this.style.color);
         hoverColor.setAlpha(.3);
 
-        let mainColor = color(this.style.color);
+        // let mainColor = color(this.style.color);
+        let mainColor = color(255, 255, 255);
 
         // render image
         if (this.image) {
-          mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .5))
           noStroke();
-          fill(mainColor)
           fill(hoverColor);
           hoverPointRadius = map(d, this.pointRadius / 2, this.soundRadius, this.soundRadius, this.pointRadius);
           hoverPointRadius = constrain(hoverPointRadius, this.pointRadius, this.soundRadius);
@@ -392,15 +380,15 @@ class NavigationItem {
           let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
           let a = 1;
           if (this.alwaysShowImage) {
-            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), .9, .5)
+            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1.0, .8)
           } else {
-            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), .9, 0)
+            a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1.0, 0)
           }
           tint(256, 256, 256, a);
           // TODO: fix positioning of different image sizes
           image(this.image, this.x, this.y, this.pointRadius * 2, this.pointRadius * 2, 0, 0, this.image.width, this.image.height, COVER);
         } else { // otherwise render dot
-          mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .5))
+          // mainColor.setAlpha(map(d, 0, this.soundRadius, 1, .5))
           noStroke();
           fill(mainColor)
           ellipse(this.x, this.y, this.pointRadius * 2, this.pointRadius * 2);
@@ -409,7 +397,7 @@ class NavigationItem {
 
           let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
           let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
-          fill(255, 255, 255, a)
+          fill(0, 0, 0, a)
           ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
         }
 
@@ -422,7 +410,7 @@ class NavigationItem {
 
         let dForImage = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
         let a = map(dForImage, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
-        fill(255, 255, 255, a)
+        fill(0, 0, 0, a)
         text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
 
       /*
@@ -468,6 +456,31 @@ class NavigationItem {
     */
 
 
+    }
+  }
+
+  drawTrail() {
+    switch (this.navigationState) {
+      case 'hidden':
+        // don't draw if the item is hidden
+        break;
+
+      default:
+        // trails
+        let trailColor = color(this.style.color)
+
+        noStroke()
+
+        let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
+        for (let i = this.trail.length - 1; i > frameIntervalToDrawTrail - 1; i -= frameIntervalToDrawTrail) {
+          let step = this.trail[i];
+          let r = map(i, 0, this.trail.length, this.soundRadius * 2, this.pointRadius)
+
+          let a = map(i, 0, this.trail.length, 0, .1)
+          trailColor.setAlpha(a)
+          fill(trailColor)
+          ellipse(step.x + window.innerWidth / 2, step.y + window.innerHeight / 2, r * 2, r * 2);
+        }
     }
   }
 
