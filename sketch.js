@@ -12,7 +12,7 @@ const TEXT_SIZE = 15;
 const TEXT_LEADING = 18;
 
 const MAX_TRAIL_LENGTH = 300;
-const MAX_TRAIL_PARTICLES = 20;
+const MAX_TRAIL_PARTICLES = 15;
 
 let audioEnabled = false;
 let firstInteraction = false;
