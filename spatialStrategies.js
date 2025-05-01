@@ -2,7 +2,7 @@ let canvas;
 
 canvasCenter = { x: 0, y: 0 };
 
-const items = new Map();
+const items = [];
 
 let cursorX = 1;
 let cursorY = 1;
@@ -34,17 +34,7 @@ const PATHS = {
 }
 
 const itemStyles = {
-  Default: { color: '#1B50F3' },
-  Center: { color: '#1B50F3' },
-  Inner: { color: '#1374D3' },
-  Outer: { color: '#0E90BB' },
-  Outest: { color: '#07ADA2' },
-}
-
-function preload() {
-  promptItems.forEach(promptItem => {
-    items.set(promptItem.key, new PromptItem(promptItem))
-  })
+  Default: { color: '#ED1C24' },
 }
 
 function setup() {
@@ -52,6 +42,74 @@ function setup() {
   canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 }
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
+
+  textFont("Poppins Medium");
+
+  promptItemTexts.forEach((promptItemText, i) => {
+    let pos = generatePosition(i);
+    let props = { text: promptItemText, x: pos.x, y: pos.y, path: PATHS.ROSE_LEFT, style: itemStyles.Default, pathOffset: DEFAULT_PROMPT_PATH_OFFSET() }
+    items.push(new PromptItem(props))
+  })
+}
+
+function generatePosition(i) {
+  let x = 0;
+  let y = 0;
+
+  if (i == 0) {
+    x = 0;
+    y = 0;
+  } else if (i <= 6) {
+    x = sin(i * Math.PI / 3) * R1;
+    y = cos(i * Math.PI / 3) * R1;
+  } else if (i <= 12) {
+    x = sin(i * Math.PI / 3 + Math.PI / 6) * R2;
+    y = cos(i * Math.PI / 3 + Math.PI / 6) * R2;
+  } else if (i <= 18) {
+    x = sin(i * Math.PI / 3) * R3;
+    y = cos(i * Math.PI / 3) * R3;
+  } else if (i <= 20) {
+    x = sin((i - 19) * Math.PI / 8 + Math.PI / 9.5) * R4;
+    y = cos((i - 19) * Math.PI / 8 + Math.PI / 9.5) * R4;
+  } else if (i <= 22) {
+    x = sin((i - 21) * Math.PI / 8 + Math.PI / 3 + Math.PI / 9.5) * R4;
+    y = cos((i - 21) * Math.PI / 8 + Math.PI / 3 + Math.PI / 9.5) * R4;
+  } else if (i <= 24) {
+    x = sin((i - 23) * Math.PI / 8 + 2 * Math.PI / 3 + Math.PI / 9.5) * R4;
+    y = cos((i - 23) * Math.PI / 8 + 2 * Math.PI / 3 + Math.PI / 9.5) * R4;
+  } else if (i <= 26) {
+    x = sin((i - 25) * Math.PI / 8 + 3 * Math.PI / 3 + Math.PI / 9.5) * R4;
+    y = cos((i - 25) * Math.PI / 8 + 3 * Math.PI / 3 + Math.PI / 9.5) * R4;
+  } else if (i <= 28) {
+    x = sin((i - 27) * Math.PI / 8 + 4 * Math.PI / 3 + Math.PI / 9.5) * R4;
+    y = cos((i - 27) * Math.PI / 8 + 4 * Math.PI / 3 + Math.PI / 9.5) * R4;
+  } else if (i <= 30) {
+    x = sin((i - 29) * Math.PI / 8 + 5 * Math.PI / 3 + Math.PI / 9.5) * R4;
+    y = cos((i - 29) * Math.PI / 8 + 5 * Math.PI / 3 + Math.PI / 9.5) * R4;
+  } else if (i <= 36) {
+    x = sin(i * Math.PI / 3) * R5;
+    y = cos(i * Math.PI / 3) * R5;
+  } else if (i <= 37) {
+    x = sin(Math.PI / 6) * R6;
+    y = cos(Math.PI / 6) * R6;
+  } else if (i <= 38) {
+    x = sin(Math.PI / 6 + 2 * Math.PI / 3) * R6;
+    y = cos(Math.PI / 6 + 2 * Math.PI / 3) * R6;
+  } else if (i <= 39) {
+    x = sin(-Math.PI / 6) * R6;
+    y = cos(-Math.PI / 6) * R6;
+  } else if (i <= 40) {
+    x = sin(-Math.PI / 6 - 2 * Math.PI / 3) * R6;
+    y = cos(-Math.PI / 6 - 2 * Math.PI / 3) * R6;
+  } else if (i <= 52) {
+    x = sin((i - 41) * Math.PI / 6 + Math.PI / 12) * R7;
+    y = cos((i - 41) * Math.PI / 6 + Math.PI / 12) * R7;
+  }
+
+
+  console.log(i, x, y)
+
+  return { x: x, y: y };
 }
 
 function windowResized() {
@@ -61,7 +119,7 @@ function windowResized() {
 }
 
 function draw() {
-  background(255)
+  background(color("#E6EDE7"));
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -84,18 +142,18 @@ function draw() {
   }
 
   itemMotion = true;
-  console.log(items.forEach(promptItem => {
+  items.forEach(promptItem => {
     promptItem.draw()
     if (promptItem.isHovered) {
       itemMotion = false;
     }
-  }));
+  });
 
   // draw credits text
-  fill(100);
+  fill(0, 0, 0, .3);
   textSize(TEXT_SIZE * canvasScale);
   textAlign(CENTER, BASELINE)
-  text("Spatial Prompts by SØSTR and others.", window.innerWidth / 2, window.innerHeight - 20);
+  text("Spatial Strategies by SØSTR and others.", window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
   fill(0, 0, 0, .8)
@@ -108,8 +166,7 @@ window.mouseClicked = e => items.forEach(promptItem => {
 
 class PromptItem {
   constructor(props) {
-    this.title = props.title;
-    this.credit = props.credit;
+    this.text = props.text;
     this.style = props.style;
     this.originX = props.x;
     this.originY = props.y;
@@ -117,9 +174,9 @@ class PromptItem {
     this.y = 0;
     this.pointRadius = props.pointRadius !== undefined ? props.pointRadius : DEFAULT_PROMPT_POINT_RADIUS;
     this.hoverRadius = props.hoverRadius !== undefined ? props.hoverRadius : DEFAULT_PROMPT_HOVER_RADIUS;
+    this.expandedRadius = props.expandedRadius !== undefined ? props.expandedRadius : DEFAULT_PROMPT_EXPANDED_RADIUS;
     this.scaledPointRadius = 0;
     this.scaledHoverRadius = 0;
-    this.image = props.image;
     this.path = props.path;
     this.pathScale = DEFAULT_PROMPT_PATH_SCALE;
     this.pathSpeed = DEFAULT_PROMPT_PATH_SPEED;
@@ -140,11 +197,12 @@ class PromptItem {
 
     this.scaledPointRadius = this.pointRadius * window.innerHeight;
     this.scaledHoverRadius = this.hoverRadius * window.innerHeight;
+    this.scaledExpandedRadius = this.expandedRadius * window.innerHeight;
 
     let d = dist(this.x, this.y, cursorX, cursorY);
     d = this.isActivated ? 0 : d;
-    let hoverDistance = constrain(d, this.scaledPointRadius, this.scaledHoverRadius);
-    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius, this.scaledHoverRadius, this.scaledHoverRadius, 0);
+    let hoverDistance = constrain(d, this.scaledPointRadius / 2, this.scaledHoverRadius);
+    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius, this.scaledExpandedRadius, this.scaledPointRadius);
 
     // hover ellipse
     noStroke();
@@ -159,9 +217,10 @@ class PromptItem {
     // text fill color
     noStroke();
     let mainColor = color(this.style.color);
-    let creditColor = mainColor
 
-    mainColor.setAlpha(map(hoverDistance, 0, this.scaledHoverRadius, 1, 0))
+    let textAlpha = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius * .75, .6, 0);
+    textAlpha = this.isActivated ? 1 : textAlpha;
+    mainColor.setAlpha(textAlpha)
     fill(mainColor)
 
     // text render
@@ -169,22 +228,17 @@ class PromptItem {
     rectMode(CENTER)
     textSize(TEXT_SIZE * canvasScale);
     textLeading(TEXT_LEADING * canvasScale);
-    text(this.title, this.x, this.y, this.scaledHoverRadius * 1.7, this.scaledHoverRadius * 3.5);
-
-    creditColor.setAlpha(map(hoverDistance, 0, this.scaledHoverRadius, 1, 0))
-    fill(creditColor)
-    text(this.credit, this.x, this.y + this.scaledHoverRadius * .7);
-
-    this.isHovered = d < this.scaledPointRadius
+    text(this.text, this.x, this.y, this.scaledExpandedRadius * 1.7, this.scaledExpandedRadius * 3.5);
 
     // outer ring
     noFill();
-    let hoverRadiusColor = color(this.style.color);
-    let a = map(hoverDistance, 0, this.scaledHoverRadius, 1.0, .2)
-    a = this.isHovered ? .5 : a;
-    hoverRadiusColor.setAlpha(a);
-    stroke(hoverRadiusColor);
-    ellipse(this.x, this.y, this.scaledHoverRadius * 2, this.scaledHoverRadius * 2);
+    let outerRingColor = color(this.style.color);
+    let ringAlpha = this.isActivated ? .5 : 0;
+    outerRingColor.setAlpha(ringAlpha);
+    stroke(outerRingColor);
+    ellipse(this.x, this.y, this.scaledExpandedRadius * 2, this.scaledExpandedRadius * 2);
+
+    this.isHovered = d < this.scaledHoverRadius
   }
 
   clicked(e) {

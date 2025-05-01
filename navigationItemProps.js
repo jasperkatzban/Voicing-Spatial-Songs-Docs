@@ -1,7 +1,7 @@
 const navigationItemProps = [
     {
         key: 'PERFORMANCE',
-        title: 'PERFORMANCE',
+        title: 'Performance',
         type: 'group',
         style: navigationItemStyles.Output,
         soundURL: 'sounds/test-tone-6.mp3',
@@ -128,7 +128,7 @@ const navigationItemProps = [
     },
     {
         key: 'SPATIAL STRATEGIES',
-        title: 'SPATIAL STRATEGIES',
+        title: 'Spatial Strategies',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3539951',
         style: navigationItemStyles.Output,
@@ -142,7 +142,7 @@ const navigationItemProps = [
     },
     {
         key: 'CHAOS PENDULUM',
-        title: 'CHAOS PENDULUM',
+        title: 'Chaos Pendulum PENDULUM',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539328',
         style: navigationItemStyles.Output,
@@ -158,7 +158,7 @@ const navigationItemProps = [
     },
     {
         key: `SPACE HALO (HALO D'ESPACE)`,
-        title: `SPACE HALO (HALO D'ESPACE)`,
+        title: `Space Halo (Halo d'Espace)`,
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539325',
         style: navigationItemStyles.Output,
@@ -174,7 +174,7 @@ const navigationItemProps = [
     },
     {
         key: 'BAGUA INTERFACE',
-        title: 'BAGUA',
+        title: 'Bagua',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3539322',
         style: navigationItemStyles.Output,
@@ -190,7 +190,7 @@ const navigationItemProps = [
     },
     {
         key: 'MULTI VOICING SPATIAL SONGS',
-        title: 'MULTI VOICING SPATIAL SONGS',
+        title: 'Multi Voicing Spatial Songs',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512955',
         style: navigationItemStyles.Output,
@@ -205,7 +205,7 @@ const navigationItemProps = [
     },
     {
         key: 'GOING SPATIAL',
-        title: 'GOING SPATIAL',
+        title: 'Going Spatial',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512949',
         style: navigationItemStyles.Process,
@@ -219,7 +219,7 @@ const navigationItemProps = [
     },
     {
         key: 'INTERFACES',
-        title: 'INTERFACES',
+        title: 'Interfaces',
         type: 'group',
         style: navigationItemStyles.Process,
         soundURL: 'sounds/test-tone-10.mp3',
@@ -233,7 +233,7 @@ const navigationItemProps = [
     },
     {
         key: 'SPATIAL SONGWRITING EXPERIMENTS',
-        title: 'SPATIAL SONGWRITING EXPERIMENTS',
+        title: 'Spatial Songwriting Experiments',
         type: 'group',
         style: navigationItemStyles.Process,
         soundURL: 'sounds/test-tone-6.mp3',
@@ -247,7 +247,7 @@ const navigationItemProps = [
     },
     {
         key: 'GHOSTLY VOICE',
-        title: 'GHOSTLY VOICE',
+        title: 'Ghostly Voice',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -261,7 +261,7 @@ const navigationItemProps = [
     },
     {
         key: 'BAGUA EXPERIMENT',
-        title: 'BAGUA',
+        title: 'Bagua',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -275,7 +275,7 @@ const navigationItemProps = [
     },
     {
         key: 'SWEET SPOT EXPERIMENT',
-        title: 'SWEET SPOT',
+        title: 'Sweet Spot',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -289,7 +289,7 @@ const navigationItemProps = [
     },
     {
         key: 'LISSAJOUS',
-        title: 'LISSAJOUS',
+        title: 'Lissajous',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -303,7 +303,7 @@ const navigationItemProps = [
     },
     {
         key: '12 BUTTERFLIES',
-        title: '12 BUTTERFLIES',
+        title: '12 Butterflies',
         type: 'subItem',
         link: 'https://www.researchcatalogue.net/view/3512750/3512958',
         style: navigationItemStyles.Process,
@@ -317,7 +317,7 @@ const navigationItemProps = [
     },
     {
         key: 'SWEET SPOT THOUGHT',
-        title: 'SWEET SPOT',
+        title: 'Sweet Spot',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512964',
         style: navigationItemStyles.Thought,
@@ -331,7 +331,7 @@ const navigationItemProps = [
     },
     {
         key: 'AGENCY',
-        title: 'AGENCY',
+        title: 'Agency',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512967',
         style: navigationItemStyles.Thought,
@@ -345,7 +345,7 @@ const navigationItemProps = [
     },
     {
         key: 'SONIC / SPACE',
-        title: 'SONIC / SPACE',
+        title: 'Sonic / Space',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512971',
         style: navigationItemStyles.Thought,
@@ -359,7 +359,7 @@ const navigationItemProps = [
     },
     {
         key: 'TECHNO VOICE',
-        title: 'TECHNO VOICE',
+        title: 'Techno Voice',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3512961',
         style: navigationItemStyles.Thought,
@@ -373,7 +373,7 @@ const navigationItemProps = [
     },
     {
         key: 'INSPIRATION',
-        title: 'INSPIRATION',
+        title: 'Inspiration',
         type: 'group',
         style: navigationItemStyles.Inspiration,
         soundURL: 'sounds/test-tone-1.mp3',

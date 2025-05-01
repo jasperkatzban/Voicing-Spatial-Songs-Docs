@@ -48,11 +48,25 @@ const PATHS = {
   },
 }
 
+
+// monochrone
 const navigationItemStyles = {
-  Inspiration: { color: '#00CE85' },
-  Thought: { color: '#AF00FF' },
-  Process: { color: '#FFA100' },
-  Output: { color: '#1A4EF3' }
+  // Inspiration: { color: '#ED1C24' }, // reds mono
+  // Thought: { color: '#ED1C24' },
+  // Process: { color: '#ED1C24' },
+  // Output: { color: '#ED1C24' }
+  // Inspiration: { color: '#FF575C' }, // reds light
+  // Thought: { color: '#FF4249' },
+  // Process: { color: '#f72a31' },
+  // Output: { color: '#ED1C24' }
+  Inspiration: { color: '#AD7F81' }, // red mid
+  Thought: { color: '#B82E32' },
+  Process: { color: '#BD0F15' },
+  Output: { color: '#ED1C24' }
+  //   Inspiration: { color: '#00CE85' }, // old
+  //   Thought: { color: '#AF00FF' },
+  //   Process: { color: '#FFA100' },
+  //   Output: { color: '#1A4EF3' }
 }
 
 function preload() {
@@ -90,6 +104,8 @@ function setup() {
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
 
+  textFont("Poppins Medium");
+
   navigationItems.forEach(navigationItem => {
     navigationItem.loop();
   })
@@ -102,7 +118,8 @@ function windowResized() {
 }
 
 function draw() {
-  background(255);
+  background(color("#E6EDE7")); // test green background
+  // background(255);
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -365,7 +382,7 @@ class NavigationItem {
         // draw outer circle
         noFill();
         // let soundRadiusColor = mainColor
-        let soundRadiusColor = color(255, 255, 255);
+        let soundRadiusColor = color(this.style.color);
         soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .5, 0))
         stroke(soundRadiusColor);
         ellipse(this.x, this.y, this.soundRadius * 2, this.soundRadius * 2);
