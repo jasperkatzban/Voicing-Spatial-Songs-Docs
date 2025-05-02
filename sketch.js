@@ -221,6 +221,7 @@ mouseClicked = e => {
     firstInteraction = true;
   }
 
+  // check clicking per each item
   navigationItems.forEach(navigationItem => {
     navigationItem.playAudio()
     navigationItem.clicked(e)
@@ -374,19 +375,14 @@ class NavigationItem {
 
         // text
         fill(mainColor)
-        textAlign(CENTER, TOP);
-        rectMode(CENTER)
+        textAlign(LEFT, CENTER);
         textSize(TEXT_SIZE * canvasScale);
-        let strokeColor = color(palette.dark)
-        strokeColor.setAlpha(.05);
-        stroke(strokeColor)
-        strokeWeight(1)
-        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius * 1.5, 100);
+        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius + 5);
 
         // fade text to white on hover
         let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
         fill(255, 255, 255, a)
-        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius * 1.5, 100);
+        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius + 5);
 
       /* alternate radial text
       let textRadius = this.soundRadius / 2
@@ -437,8 +433,6 @@ class NavigationItem {
       let trailColor = color(this.style.color)
       let trailStrokeColor = color(this.style.color)
 
-      noStroke()
-
       let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
       for (let i = 0; i < MAX_TRAIL_LENGTH; i += frameIntervalToDrawTrail) {
         let { x: trailX, y: trailY, t: trailT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset - i * .002)
@@ -485,7 +479,7 @@ class NavigationItem {
 
   updateVolume() {
     if (this.sound) {
-      if (this.navigationState !== 'hidden') {
+      if (this.navigationState == 'foreground') {
         let d = dist(this.x, this.y, cursorX, cursorY);
         d = constrain(d, 0, this.phantomSoundRadius);
         let aInt = map(d, 0, this.phantomSoundRadius, 100, 0);
@@ -512,7 +506,9 @@ class NavigationItem {
   clicked(e) {
     // only handle click action if no other items have been clicked and items are visible
     if (!itemClickedDuringFrame) {
-      this.handleClick(e)
+      if (this.navigationState == 'foreground' || this.navigationState == 'hidden') {
+        this.handleClick(e);
+      }
     }
   }
 
@@ -555,18 +551,20 @@ class GroupItem extends NavigationItem {
 
   handleClick(e) {
     // check if mouse click is within item bounds
-    if (this.isActiveGroup) {
-      let d = dist(e.clientX, e.clientY, canvasCenter.x, canvasCenter.y);
-      // if clicking outside the center area, exit the group
-      if (d > window.innerHeight / 3) {
-        handleGroupExitClick(this);
-      }
-    } else {
-      let d = dist(e.clientX, e.clientY, this.x, this.y);
-      if (d < this.soundRadius / 4) {
-        handleGroupEntryClick(this);
-        itemClickedDuringFrame = true;
-      }
+    // if (this.navigationState == 'foreground') {
+    let d = dist(e.clientX, e.clientY, this.x, this.y);
+    if (d < this.soundRadius / 4) {
+      handleGroupEntryClick(this);
+      itemClickedDuringFrame = true;
+      return;
+    }
+
+    // if clicking outside the center area, exit the group
+    let distFromCenter = dist(e.clientX, e.clientY, canvasCenter.x, canvasCenter.y);
+    let clickIsOutsideCenter = distFromCenter > window.innerHeight / 3;
+
+    if (clickIsOutsideCenter && this.isActiveGroup) {
+      handleGroupExitClick(this);
     }
   }
 }
