@@ -27,8 +27,8 @@ const PATHS = {
     return { x, y, t };
   },
   ORBIT_RIGHT: (scale, speed, offset) => {
-    let x = scale * window.innerHeight * sin(-millis() * speed + offset);
-    let y = scale * window.innerHeight * cos(-millis() * speed + offset);
+    let x = scale * window.innerHeight * sin(-millis() * speed - offset);
+    let y = scale * window.innerHeight * cos(-millis() * speed - offset);
     let t = -millis() * speed + offset
     return { x, y, t };
   },
@@ -129,13 +129,9 @@ function draw() {
     getAudioContext().resume();
   }
 
-  // draw cursor halo
-  imageMode(CENTER)
-  image(cursorImage, cursorX, cursorY, 200, 200);
-
   // draw trails in background first
   navigationItems.forEach(navigationItem => {
-    // navigationItem.drawTrail();
+    navigationItem.drawTrail();
   });
 
   // then draw items
@@ -153,7 +149,7 @@ function draw() {
 
   // draw cursor dot 
   fill(palette.dark)
-  ellipse(cursorX, cursorY, 20, 20)
+  ellipse(cursorX, cursorY, 10, 10)
 
   // set flag to false once all draw updates have occured
   itemClickedDuringFrame = false;
@@ -256,41 +252,24 @@ class NavigationItem {
     this.x = window.innerWidth / 2 + pathX;
     this.y = window.innerHeight / 2 + pathY;
 
-    this.trail = this.generateNewTrail();
-    this.logTrailCounter = 0;
-
     this.navigationState = 'foreground';
   }
 
   show() {
-    this.trail = this.generateNewTrail();
     this.navigationState = 'foreground';
   }
 
   hide() {
-    this.trail = [];
     this.navigationState = 'hidden';
     this.fadeOutAudio()
   }
 
   moveToBackground() {
-    this.trail = [];
     this.navigationState = 'background';
   }
 
   moveToForeground() {
-    this.trail = this.generateNewTrail();
     this.navigationState = 'foreground';
-  }
-
-  generateNewTrail() {
-    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
-    return new Array(MAX_TRAIL_LENGTH).fill({ x: pathX, y: pathY });
-  }
-
-  getInitialTrailEntry() {
-    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
-    return { x: pathX, y: pathY };
   }
 
   updatePos() {
@@ -303,11 +282,6 @@ class NavigationItem {
       case 'foreground':
         targetX = canvasCenter.x + pathX;
         targetY = canvasCenter.y + pathY;
-
-        this.trail.push(this.getInitialTrailEntry());
-        if (this.trail.length > MAX_TRAIL_LENGTH) {
-          this.trail.splice(0, 1);
-        }
         break;
 
       case 'background':
@@ -360,13 +334,6 @@ class NavigationItem {
         let d = dist(this.x, this.y, cursorX, cursorY);
         d = constrain(d, 0, this.soundRadius);
         let dScaled = constrain(d, this.soundRadius / 4, this.soundRadius * (2 / 5))
-
-        // draw outer circle
-        noFill();
-        let soundRadiusColor = color(this.style.color);
-        soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .5, 0))
-        stroke(soundRadiusColor);
-        ellipse(this.x, this.y, this.soundRadius * 2, this.soundRadius * 2);
 
         // change hover indicator size and opacity on hover
         let hoverColor = color(this.style.color);
@@ -466,27 +433,30 @@ class NavigationItem {
   }
 
   drawTrail() {
-    switch (this.navigationState) {
-      case 'hidden':
-        // don't draw if the item is hidden
-        break;
+    if (this.navigationState == 'foreground') {
+      let trailColor = color(this.style.color)
+      let trailStrokeColor = color(this.style.color)
 
-      default:
-        // trails
-        let trailColor = color(this.style.color)
+      noStroke()
 
-        noStroke()
+      let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
+      for (let i = 0; i < MAX_TRAIL_LENGTH; i += frameIntervalToDrawTrail) {
+        let { x: trailX, y: trailY, t: trailT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset - i * .002)
+        let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
 
-        let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
-        for (let i = this.trail.length - 1; i > frameIntervalToDrawTrail - 1; i -= frameIntervalToDrawTrail) {
-          let step = this.trail[i];
-          let r = map(i, 0, this.trail.length, this.soundRadius * 2, this.pointRadius)
+        let r = map(i, 0, MAX_TRAIL_LENGTH, this.pointRadius, this.soundRadius * 2)
 
-          let a = map(i, 0, this.trail.length, 0, .14) /* + cos(-millis() * .0005 - i * Math.PI * 5 / 6) * .01 */
-          trailColor.setAlpha(a)
-          fill(trailColor)
-          ellipse(step.x + window.innerWidth / 2, step.y + window.innerHeight / 2, r * 2, r * 2);
-        }
+        let a = map(i, 0, MAX_TRAIL_LENGTH, .3, 0)
+
+        trailStrokeColor.setAlpha(a)
+        stroke(trailStrokeColor);
+        strokeWeight(1);
+
+        trailColor.setAlpha(a * .1)
+        fill(trailColor)
+
+        ellipse(trailX + this.x - pathX, trailY + this.y - pathY, r * 2, r * 2);
+      }
     }
   }
 

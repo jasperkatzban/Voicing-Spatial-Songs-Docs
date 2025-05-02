@@ -3,7 +3,7 @@ const palette = {
     secondary: "#4C56BD",
     alternate: "#119DA4",
     accent: "#FFB300",
-    light: "#E6EDE7",
+    light: "#E7ECE2",
     dark: "#211103"
 }
 
