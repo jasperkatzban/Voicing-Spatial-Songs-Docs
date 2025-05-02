@@ -251,7 +251,7 @@ const navigationItemProps = [
     {
         key: 'FROM STEREO TO SPATIAL',
         title: 'From Stereo to Spatial',
-        type: 'subItem',
+        type: 'subGroup',
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
@@ -318,7 +318,7 @@ const navigationItemProps = [
     {
         key: 'EVENTS',
         title: 'Events',
-        type: 'subItem',
+        type: 'subGroup',
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
@@ -490,7 +490,7 @@ const navigationItemProps = [
     {
         key: 'INTERFACE DESIGN',
         title: 'Interface Design',
-        type: 'subItem',
+        type: 'subGroup',
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,

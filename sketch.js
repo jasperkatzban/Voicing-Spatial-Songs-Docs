@@ -60,19 +60,20 @@ function preload() {
     }
     switch (navigationItemProp.type) {
       case "group":
-        navigationItems.set(navigationItemProp.key, new GroupItem(navigationItemProp))
+        navigationItems.set(navigationItemProp.key, new GroupItem(navigationItemProp));
+        break;
+      case "subGroup":
+        let subGroup = new GroupItem(navigationItemProp);
+        subGroup.navigationState = 'hidden';
+        navigationItems.set(navigationItemProp.key, subGroup);
         break;
       case "link":
-        navigationItems.set(navigationItemProp.key, new LinkItem(navigationItemProp))
+        navigationItems.set(navigationItemProp.key, new LinkItem(navigationItemProp));
         break;
       case "subItem":
-        let subItem = new LinkItem(navigationItemProp)
-        subItem.navigationState = 'hidden'
-        navigationItems.set(navigationItemProp.key, subItem)
-
-      // TODO: handle default case
-      default:
-        break;
+        let subItem = new LinkItem(navigationItemProp);
+        subItem.navigationState = 'hidden';
+        navigationItems.set(navigationItemProp.key, subItem);
     }
   })
 }
@@ -134,7 +135,7 @@ function draw() {
 
   // draw trails in background first
   navigationItems.forEach(navigationItem => {
-    navigationItem.drawTrail();
+    // navigationItem.drawTrail();
   });
 
   // then draw items
@@ -170,14 +171,19 @@ function handleGroupEntryClick(clickedGroupItem) {
     if (clickedGroupItem.subItems.includes(item.key)) {
       item.moveToForeground();
       item.show();
-    } else if (item.type !== 'subItem') {
+    } else if (item.type == 'link' || item.type == 'group') {
       // send other navigationItems to background
       item.moveToBackground();
     } else {
       item.hide();
     }
 
-    if (item.type == 'group') {
+    // make sure parent object gets hidden
+    if (item.subItems && item.subItems.includes(clickedGroupItem.key)) {
+      item.hide()
+    }
+
+    if (item.type == 'group' || item.type == 'subGroup') {
       if (item == clickedGroupItem) {
         item.isActiveGroup = true;
       } else {
@@ -192,12 +198,17 @@ function handleGroupExitClick(clickedGroupItem) {
   navigationItems.forEach(item => {
     if (clickedGroupItem.subItems.includes(item.key)) {
       item.hide();
-    } else if (item.type !== 'subItem') {
+    } else if (item.type == 'link' || item.type == 'group') {
       // restore other navigationItems
       item.moveToForeground();
     }
 
     if (item.type == 'group') {
+      item.isActiveGroup = false;
+    }
+
+    if (item.type == 'subGroup') {
+      item.hide();
       item.isActiveGroup = false;
     }
   })
