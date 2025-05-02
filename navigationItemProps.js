@@ -140,14 +140,14 @@ const navigationItemProps = [
         pathOffset: Math.PI,
         subItems: [
             'GHOSTLY VOICES',
-            'SPATIAL SCORE 2',
+            'AT FIRST',
         ]
     },
     {
         key: 'GHOSTLY VOICES',
         title: 'Ghostly Voices',
         type: 'subItem',
-        link: '',
+        link: 'https://www.researchcatalogue.net/view/3512750/3619220',
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
@@ -157,10 +157,10 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        key: 'SPATIAL SCORE 2',
-        title: 'Spatial Score 2',
+        key: 'AT FIRST',
+        title: 'At First',
         type: 'subItem',
-        link: '',
+        link: 'https://www.researchcatalogue.net/view/3512750/3619242',
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
@@ -268,7 +268,7 @@ const navigationItemProps = [
         pathScale: .5,
         pathSpeed: .00007,
         pathOffset: 0,
-        subItems: ['GHOSTLY VOICE', 'BAGUA EXPERIMENT', 'SWEET SPOT EXPERIMENT', 'LISSAJOUS', '12 BUTTERFLIES']
+        subItems: ['GHOSTLY VOICE', 'SWEET SPOT EXPERIMENT', '12 BUTTERFLIES']
     },
     {
         key: 'GHOSTLY VOICE',
