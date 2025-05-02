@@ -22,7 +22,10 @@ let motionMillis = 0;
 let millisPaused = 0
 
 const TEXT_SIZE = 15;
-const TEXT_LEADING = 18;
+const TEXT_SIZE_SMALL = 12;
+const TEXT_LEADING = 20;
+const TEXT_LEADING_SMALL = 16;
+const TEXT_RESIZE_CHAR_LIMIT = 130;
 
 const PATHS = {
   ROSE_LEFT: (scale, speed, offset) => {
@@ -129,7 +132,7 @@ function windowResized() {
 }
 
 function draw() {
-  background(color("#E6EDE7"));
+  background(palette.light);
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -159,6 +162,11 @@ function draw() {
     }
   });
 
+  let activeItem = items[activeItemIndex]
+  if (activeItem) {
+    activeItem.draw();
+  }
+
   randomizeButton.draw();
   descriptionButton.draw();
 
@@ -166,11 +174,11 @@ function draw() {
     description.draw();
   }
 
-  // draw credits text
+  // draw tooltip text
   fill(palette.primary);
   textSize(TEXT_SIZE * canvasScale);
   textAlign(CENTER, BASELINE)
-  text("Spatial Strategies", window.innerWidth / 2, window.innerHeight - 20);
+  text("Click the circles above to view a strategy, or use the shuffle button to pick one randomly.", window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
   fill(palette.dark)
@@ -374,46 +382,56 @@ class PromptItem {
     this.scaledExpandedRadius = this.expandedRadius * window.innerHeight;
 
     // hover ellipse
-    let hoverColor = color(palette.primary);
-    hoverColor.setAlpha(.05);
-    if (this.isActivated) {
-      hoverColor.setAlpha(.1);
-    }
-    fill(hoverColor);
+    let fillColor = color(palette.primary);
+    let fillAlpha = this.isActivated ? .1 : .05;
+    fillColor.setAlpha(fillAlpha);
 
     let outerRingColor = color(palette.primary);
     let ringAlpha = this.isActivated ? .5 : .2;
     outerRingColor.setAlpha(ringAlpha);
+
     stroke(outerRingColor);
     strokeWeight(1);
 
     if (isDescriptionVisible) {
+      fill(fillColor);
       ellipse(this.x, this.y, this.scaledPointRadius * 2, this.scaledPointRadius * 2);
       return;
     }
 
     let d = dist(this.x, this.y, cursorX, cursorY);
-    d = this.isActivated ? 0 : d;
     let hoverDistance = constrain(d, this.scaledPointRadius / 2, this.scaledHoverRadius);
-    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius, this.scaledExpandedRadius, this.scaledPointRadius);
 
-    ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
+    if (this.isActivated) {
+      fill(palette.light);
+      ellipse(this.x, this.y, this.scaledExpandedRadius * 2, this.scaledExpandedRadius * 2);
 
-    // text fill color
-    noStroke();
-    let mainColor = color(palette.primary);
+      // fill(fillColor);
+      // ellipse(this.x, this.y, this.scaledExpandedRadius * 2, this.scaledExpandedRadius * 2);
+    } else {
+      let hoverPointRadius = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius, this.scaledExpandedRadius / 3, this.scaledPointRadius);
+      hoverPointRadius = this.isActivated ? this.scaledExpandedRadius : hoverPointRadius;
 
-    let textAlpha = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius * .75, .6, 0);
-    textAlpha = this.isActivated ? 1 : textAlpha;
-    mainColor.setAlpha(textAlpha)
-    fill(mainColor)
+      fill(fillColor);
+      ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
+    }
 
     // text render
-    textAlign(CENTER, CENTER);
-    rectMode(CENTER)
-    textSize(TEXT_SIZE * canvasScale);
-    textLeading(TEXT_LEADING * canvasScale);
-    text(this.text, this.x, this.y, this.scaledExpandedRadius * 1.7, this.scaledExpandedRadius * 3.5);
+    if (this.isActivated) {
+      noStroke();
+      fillColor.setAlpha(1);
+      fill(fillColor);
+      textAlign(CENTER, CENTER);
+      rectMode(CENTER);
+      if (this.text.length > TEXT_RESIZE_CHAR_LIMIT) {
+        textSize(TEXT_SIZE_SMALL * canvasScale);
+        textLeading(TEXT_LEADING_SMALL * canvasScale);
+      } else {
+        textSize(TEXT_SIZE * canvasScale);
+        textLeading(TEXT_LEADING * canvasScale);
+      }
+      text(this.text, this.x, this.y, this.scaledExpandedRadius * 1.7, this.scaledExpandedRadius * 3.5);
+    }
 
     this.isHovered = d < this.scaledHoverRadius
   }
