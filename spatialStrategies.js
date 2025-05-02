@@ -3,6 +3,14 @@ let canvas;
 canvasCenter = { x: 0, y: 0 };
 
 const items = [];
+let activeItemIndex = undefined;
+
+let randomizeButton;
+let descriptionButton;
+let description;
+let isDescriptionVisible = false;
+let randomizeButtonIconImage;
+let descriptionButtonIconImage;
 
 let cursorX = 1;
 let cursorY = 1;
@@ -33,19 +41,29 @@ const PATHS = {
   },
 }
 
+function preload() {
+  randomizeButtonIconImage = loadImage('images/icon-shuffle.png');
+  descriptionButtonIconImage = loadImage('images/icon-question.png');
+}
+
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 }
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
+  imageMode(CENTER);
 
   textFont("Poppins Medium");
 
   promptItemTexts.forEach((promptItemText, i) => {
     let pos = generatePosition(i);
-    let props = { text: promptItemText, x: pos.x, y: pos.y, path: PATHS.ROSE_LEFT, pathOffset: DEFAULT_PROMPT_PATH_OFFSET() }
-    items.push(new PromptItem(props))
+    let props = { key: i, text: promptItemText, x: pos.x, y: pos.y, path: PATHS.ROSE_LEFT, pathOffset: DEFAULT_PROMPT_PATH_OFFSET() }
+    items.push(new PromptItem(props));
   })
+
+  randomizeButton = new RandomizeButton({ x: .6, y: 0, size: DEFAULT_PROMPT_POINT_RADIUS, iconImage: randomizeButtonIconImage });
+  descriptionButton = new DescriptionButton({ x: -.6, y: 0, size: DEFAULT_PROMPT_POINT_RADIUS, iconImage: descriptionButtonIconImage });
+  description = new Description({ x: 0, y: 0, size: .185 });
 }
 
 function generatePosition(i) {
@@ -101,10 +119,6 @@ function generatePosition(i) {
     x = sin((i - 41) * Math.PI / 6 + Math.PI / 12) * R7;
     y = cos((i - 41) * Math.PI / 6 + Math.PI / 12) * R7;
   }
-
-
-  console.log(i, x, y)
-
   return { x: x, y: y };
 }
 
@@ -145,6 +159,13 @@ function draw() {
     }
   });
 
+  randomizeButton.draw();
+  descriptionButton.draw();
+
+  if (isDescriptionVisible) {
+    description.draw();
+  }
+
   // draw credits text
   fill(palette.primary);
   textSize(TEXT_SIZE * canvasScale);
@@ -152,16 +173,174 @@ function draw() {
   text("Spatial Strategies", window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
-  fill(0, 0, 0, .8)
-  ellipse(cursorX, cursorY, 20, 20)
+  fill(palette.dark)
+  ellipse(cursorX, cursorY, 10, 10)
 }
 
-window.mouseClicked = e => items.forEach(promptItem => {
-  promptItem.clicked(e)
-});
+window.mouseClicked = e => {
+  if (!isDescriptionVisible) {
+    items.forEach(promptItem => {
+      promptItem.clicked(e)
+    });
+    randomizeButton.clicked(e);
+  }
+  description.clicked(e);
+  descriptionButton.clicked(e);
+}
+
+function updateActiveItem(key) {
+  if (items[activeItemIndex]) {
+    items[activeItemIndex].isActivated = false;
+  }
+  if (activeItemIndex == key) {
+    activeItemIndex = undefined;
+    return
+  }
+
+  if (key !== undefined) {
+    items[key].isActivated = true;
+  }
+
+  activeItemIndex = key;
+}
+
+function pickRandomItem() {
+  // pick random index
+  let key = Math.floor(Math.random() * items.length)
+
+  // retry if same item was picked twice
+  if (key == activeItemIndex) {
+    pickRandomItem();
+    return;
+  }
+
+  updateActiveItem(key)
+}
+
+
+class Button {
+  constructor(props) {
+    this.originX = props.x;
+    this.originY = props.y;
+    this.size = props.size;
+    this.x = 0;
+    this.y = 0;
+    this.radius = 0;
+    this.iconImage = props.iconImage;
+    this.isHovered = false;
+  }
+
+  draw() {
+    this.updatePos();
+
+    this.checkHoverStatus();
+
+    let fillColor = color(palette.primary);
+    let fillAlpha = this.isHovered ? 1 : .5;
+    fillColor.setAlpha(fillAlpha);
+
+    fill(fillColor);
+    ellipse(this.x, this.y, this.radius * 2, this.radius * 2)
+
+    if (this.iconImage) {
+      image(this.iconImage, this.x, this.y, this.radius * 1.2, this.radius * 1.2, 0, 0, this.iconImage.width, this.iconImage.height, COVER);
+    }
+  }
+
+  updatePos() {
+    this.x = this.originX * window.innerHeight + canvasCenter.x;
+    this.y = this.originY * window.innerHeight + canvasCenter.y;
+    this.radius = this.size * window.innerHeight;
+  }
+
+  checkHoverStatus() {
+    this.isHovered = (abs(mouseX - this.x) <= this.radius && abs(mouseY - this.y) <= this.radius);
+  }
+
+  clicked(e) {
+    if (this.isHovered) {
+      this.handleClick();
+    }
+  }
+
+  handleClick() {
+  }
+}
+
+class RandomizeButton extends Button {
+  constructor(props) {
+    super(props)
+  }
+
+  handleClick() {
+    pickRandomItem();
+  }
+
+}
+
+class DescriptionButton extends Button {
+  constructor(props) {
+    super(props)
+  }
+
+  handleClick() {
+    showDescription();
+  }
+}
+
+function showDescription() {
+  isDescriptionVisible = true;
+  updateActiveItem(undefined);
+}
+
+function hideDescription() {
+  isDescriptionVisible = false;
+}
+
+class Description {
+  constructor(props) {
+    this.originX = props.x;
+    this.originY = props.y;
+    this.size = props.size;
+    this.x = 0;
+    this.y = 0;
+    this.radius = 0;
+  }
+
+  draw() {
+    let tint = color(palette.primary);
+    tint.setAlpha(.05);
+    background(tint);
+    this.updatePos();
+
+    fill(palette.light);
+    stroke(palette.primary)
+    strokeWeight(1)
+    ellipse(this.x, this.y, this.radius * 2, this.radius * 2)
+    noStroke();
+
+    fill(palette.primary);
+    textAlign(CENTER, CENTER);
+    text(descriptionText, this.x, this.y, this.radius * 1.5, windowHeight);
+  }
+
+  updatePos() {
+    this.x = this.originX * window.innerHeight + canvasCenter.x;
+    this.y = this.originY * window.innerHeight + canvasCenter.y;
+    this.radius = this.size * window.innerHeight * 2;
+  }
+
+  clicked() {
+    let d = dist(this.x, this.y, mouseX, mouseY)
+    if (d > this.radius && isDescriptionVisible) {
+      hideDescription();
+    }
+  }
+}
 
 class PromptItem {
   constructor(props) {
+    this.key = props.key;
     this.text = props.text;
     this.originX = props.x;
     this.originY = props.y;
@@ -194,19 +373,30 @@ class PromptItem {
     this.scaledHoverRadius = this.hoverRadius * window.innerHeight;
     this.scaledExpandedRadius = this.expandedRadius * window.innerHeight;
 
-    let d = dist(this.x, this.y, cursorX, cursorY);
-    d = this.isActivated ? 0 : d;
-    let hoverDistance = constrain(d, this.scaledPointRadius / 2, this.scaledHoverRadius);
-    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius, this.scaledExpandedRadius, this.scaledPointRadius);
-
     // hover ellipse
-    noStroke();
     let hoverColor = color(palette.primary);
     hoverColor.setAlpha(.05);
     if (this.isActivated) {
       hoverColor.setAlpha(.1);
     }
     fill(hoverColor);
+
+    let outerRingColor = color(palette.primary);
+    let ringAlpha = this.isActivated ? .5 : .2;
+    outerRingColor.setAlpha(ringAlpha);
+    stroke(outerRingColor);
+    strokeWeight(1);
+
+    if (isDescriptionVisible) {
+      ellipse(this.x, this.y, this.scaledPointRadius * 2, this.scaledPointRadius * 2);
+      return;
+    }
+
+    let d = dist(this.x, this.y, cursorX, cursorY);
+    d = this.isActivated ? 0 : d;
+    let hoverDistance = constrain(d, this.scaledPointRadius / 2, this.scaledHoverRadius);
+    let hoverPointRadius = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius, this.scaledExpandedRadius, this.scaledPointRadius);
+
     ellipse(this.x, this.y, hoverPointRadius * 2, hoverPointRadius * 2);
 
     // text fill color
@@ -225,21 +415,14 @@ class PromptItem {
     textLeading(TEXT_LEADING * canvasScale);
     text(this.text, this.x, this.y, this.scaledExpandedRadius * 1.7, this.scaledExpandedRadius * 3.5);
 
-    // outer ring
-    noFill();
-    let outerRingColor = color(palette.primary);
-    let ringAlpha = this.isActivated ? .5 : 0;
-    outerRingColor.setAlpha(ringAlpha);
-    stroke(outerRingColor);
-    ellipse(this.x, this.y, this.scaledExpandedRadius * 2, this.scaledExpandedRadius * 2);
-
     this.isHovered = d < this.scaledHoverRadius
   }
 
   clicked(e) {
     let d = dist(e.clientX, e.clientY, this.x, this.y);
     if (d < this.scaledPointRadius) {
-      this.isActivated = !this.isActivated
+      updateActiveItem(this.key);
     }
   }
 }
+
