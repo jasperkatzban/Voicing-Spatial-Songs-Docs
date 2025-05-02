@@ -48,27 +48,6 @@ const PATHS = {
   },
 }
 
-
-// monochrone
-const navigationItemStyles = {
-  // Inspiration: { color: '#ED1C24' }, // reds mono
-  // Thought: { color: '#ED1C24' },
-  // Process: { color: '#ED1C24' },
-  // Output: { color: '#ED1C24' }
-  // Inspiration: { color: '#FF575C' }, // reds light
-  // Thought: { color: '#FF4249' },
-  // Process: { color: '#f72a31' },
-  // Output: { color: '#ED1C24' }
-  Inspiration: { color: '#AD7F81' }, // red mid
-  Thought: { color: '#B82E32' },
-  Process: { color: '#BD0F15' },
-  Output: { color: '#ED1C24' }
-  //   Inspiration: { color: '#00CE85' }, // old
-  //   Thought: { color: '#AF00FF' },
-  //   Process: { color: '#FFA100' },
-  //   Output: { color: '#1A4EF3' }
-}
-
 function preload() {
   cursorImage = loadImage('images/cursor-corona.png')
 
@@ -118,8 +97,7 @@ function windowResized() {
 }
 
 function draw() {
-  background(color("#E6EDE7")); // test green background
-  // background(255);
+  background(color(palette.light));
 
   let targetX = mouseX;
   let dx = targetX - cursorX;
@@ -172,14 +150,8 @@ function draw() {
   let audio_enable_tooltip = (!firstInteraction && !audioEnabled ? 'click to enable audio' : '');
   text(audio_toggle_icon + audio_enable_tooltip, 20, window.innerHeight - 20);
 
-  // draw tooltip
-  fill(100);
-  textSize(TEXT_SIZE * canvasScale);
-  textAlign(RIGHT, BASELINE)
-  text('Voicing Spatial Songs Documentation Demo', window.innerWidth - 20, window.innerHeight - 20);
-
   // draw cursor dot 
-  fill(0, 0, 0, .8)
+  fill(palette.dark)
   ellipse(cursorX, cursorY, 20, 20)
 
   // set flag to false once all draw updates have occured
@@ -328,7 +300,6 @@ class NavigationItem {
         break;
 
       case 'background':
-        // TODO: add random offset to theta
         targetX = sin(pathT) * window.innerWidth * 2 / 5 + pathX * .1 + canvasCenter.x;
         targetY = cos(pathT) * window.innerHeight * 2 / 5 + pathY * .1 + canvasCenter.y;
         break;
@@ -381,7 +352,6 @@ class NavigationItem {
 
         // draw outer circle
         noFill();
-        // let soundRadiusColor = mainColor
         let soundRadiusColor = color(this.style.color);
         soundRadiusColor.setAlpha(map(d, 0, this.soundRadius, .5, 0))
         stroke(soundRadiusColor);
@@ -429,14 +399,18 @@ class NavigationItem {
         textAlign(CENTER, TOP);
         rectMode(CENTER)
         textSize(TEXT_SIZE * canvasScale);
-        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
+        let strokeColor = color(palette.dark)
+        strokeColor.setAlpha(.05);
+        stroke(strokeColor)
+        strokeWeight(1)
+        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius * 1.5, 100);
 
         // fade text to white on hover
         let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
         fill(255, 255, 255, a)
-        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius, 100);
+        text(this.title, this.x, this.y + this.pointRadius + 60, this.soundRadius * 1.5, 100);
 
-      /*
+      /* alternate radial text
       let textRadius = this.soundRadius / 2
       let currentAngle = Math.PI - (textWidth(this.title) / 2) / textRadius;
  
@@ -497,7 +471,7 @@ class NavigationItem {
           let step = this.trail[i];
           let r = map(i, 0, this.trail.length, this.soundRadius * 2, this.pointRadius)
 
-          let a = map(i, 0, this.trail.length, 0, .1) /* + cos(-millis() * .0005 - i * Math.PI * 5 / 6) * .01 */
+          let a = map(i, 0, this.trail.length, 0, .14) /* + cos(-millis() * .0005 - i * Math.PI * 5 / 6) * .01 */
           trailColor.setAlpha(a)
           fill(trailColor)
           ellipse(step.x + window.innerWidth / 2, step.y + window.innerHeight / 2, r * 2, r * 2);

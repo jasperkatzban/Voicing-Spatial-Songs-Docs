@@ -33,10 +33,6 @@ const PATHS = {
   },
 }
 
-const itemStyles = {
-  Default: { color: '#ED1C24' },
-}
-
 function setup() {
   canvas = createCanvas(window.innerWidth, window.innerHeight);
   canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 }
@@ -47,7 +43,7 @@ function setup() {
 
   promptItemTexts.forEach((promptItemText, i) => {
     let pos = generatePosition(i);
-    let props = { text: promptItemText, x: pos.x, y: pos.y, path: PATHS.ROSE_LEFT, style: itemStyles.Default, pathOffset: DEFAULT_PROMPT_PATH_OFFSET() }
+    let props = { text: promptItemText, x: pos.x, y: pos.y, path: PATHS.ROSE_LEFT, pathOffset: DEFAULT_PROMPT_PATH_OFFSET() }
     items.push(new PromptItem(props))
   })
 }
@@ -150,10 +146,10 @@ function draw() {
   });
 
   // draw credits text
-  fill(0, 0, 0, .3);
+  fill(palette.primary);
   textSize(TEXT_SIZE * canvasScale);
   textAlign(CENTER, BASELINE)
-  text("Spatial Strategies by SØSTR and others.", window.innerWidth / 2, window.innerHeight - 20);
+  text("Spatial Strategies", window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
   fill(0, 0, 0, .8)
@@ -167,7 +163,6 @@ window.mouseClicked = e => items.forEach(promptItem => {
 class PromptItem {
   constructor(props) {
     this.text = props.text;
-    this.style = props.style;
     this.originX = props.x;
     this.originY = props.y;
     this.x = 0;
@@ -206,7 +201,7 @@ class PromptItem {
 
     // hover ellipse
     noStroke();
-    let hoverColor = color(this.style.color);
+    let hoverColor = color(palette.primary);
     hoverColor.setAlpha(.05);
     if (this.isActivated) {
       hoverColor.setAlpha(.1);
@@ -216,7 +211,7 @@ class PromptItem {
 
     // text fill color
     noStroke();
-    let mainColor = color(this.style.color);
+    let mainColor = color(palette.primary);
 
     let textAlpha = map(hoverDistance, this.scaledPointRadius / 2, this.scaledHoverRadius * .75, .6, 0);
     textAlpha = this.isActivated ? 1 : textAlpha;
@@ -232,7 +227,7 @@ class PromptItem {
 
     // outer ring
     noFill();
-    let outerRingColor = color(this.style.color);
+    let outerRingColor = color(palette.primary);
     let ringAlpha = this.isActivated ? .5 : 0;
     outerRingColor.setAlpha(ringAlpha);
     stroke(outerRingColor);
