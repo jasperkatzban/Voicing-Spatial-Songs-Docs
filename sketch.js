@@ -13,10 +13,16 @@ const TEXT_LEADING = 18;
 
 const MAX_TRAIL_LENGTH = 300;
 const MAX_TRAIL_PARTICLES = 15;
+const NAVIGATION_FADE_TIME = 1000;
+const NAVIGATION_HOLD_TIME = 500;
 
 let audioEnabled = false;
 let firstInteraction = false;
 let itemClickedDuringFrame = false;
+
+let fadeOverlayColor;
+let isScreenFading = false;
+let currentFadeStartTime;
 
 // TODO: make generate via unit circle; scale position to canvas afterwards
 const PATHS = {
@@ -86,6 +92,8 @@ function setup() {
 
   textFont("Poppins Medium");
 
+  fadeOverlayColor = color(palette.light);
+
   navigationItems.forEach(navigationItem => {
     navigationItem.loop();
   })
@@ -148,12 +156,29 @@ function draw() {
 
   // draw tooltip if audio disabled
   if (!firstInteraction && !audioEnabled) {
-    text('click for sound', cursorX + 15, cursorY + 15);
+    text('click for sound', cursorX + 10, cursorY + 10);
   }
 
   // draw cursor dot 
   fill(mouseIsPressed ? palette.primary : palette.dark);
   ellipse(cursorX, cursorY, 10, 10)
+
+  if (isScreenFading) {
+    let timeSinceFadeStart = Date.now() - currentFadeStartTime;
+    let a = 0;
+
+    if (timeSinceFadeStart >= 2 * NAVIGATION_FADE_TIME + NAVIGATION_HOLD_TIME) {
+      isScreenFading = false;
+    } else if (timeSinceFadeStart < NAVIGATION_FADE_TIME) {
+      a = map(timeSinceFadeStart, 0, NAVIGATION_FADE_TIME, 0.0, 1.0, true)
+    } else if (timeSinceFadeStart > NAVIGATION_FADE_TIME + NAVIGATION_HOLD_TIME) {
+      a = map(timeSinceFadeStart - NAVIGATION_HOLD_TIME, NAVIGATION_FADE_TIME, 2 * NAVIGATION_FADE_TIME, 1.0, 0, true)
+    } else {
+      a = 1.0;
+    }
+    fadeOverlayColor.setAlpha(a)
+    background(fadeOverlayColor);
+  }
 
   // set flag to false once all draw updates have occured
   itemClickedDuringFrame = false;
@@ -253,9 +278,8 @@ class NavigationItem {
     this.pathSpeed = props.pathSpeed;
     this.pathOffset = props.pathOffset;
 
-    let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
-    this.x = window.innerWidth / 2 + pathX;
-    this.y = window.innerHeight / 2 + pathY;
+    this.x = window.innerWidth / 2;
+    this.y = window.innerHeight / 2;
 
     this.navigationState = 'foreground';
   }
@@ -503,7 +527,7 @@ class NavigationItem {
 
   fadeOutAudio() {
     if (this.sound) {
-      this.sound.setVolume(0, 1.0);
+      this.sound.setVolume(0, NAVIGATION_FADE_TIME / 1000);
     }
   }
 
@@ -538,10 +562,15 @@ class LinkItem extends NavigationItem {
 
   // TODO: Fade the rest of the scene during this time
   async openLinkAfterDelay(link) {
+    if (!isScreenFading) {
+      isScreenFading = true;
+      currentFadeStartTime = Date.now()
+    }
+
     await new Promise(() => {
       setTimeout(() => {
         window.open(link, '_self');
-      }, 1000);
+      }, NAVIGATION_FADE_TIME);
     });
   }
 }
