@@ -140,15 +140,19 @@ function draw() {
   });
 
   // draw audio toggle
-  fill(100);
+  fill(palette.dark);
   textSize(TEXT_SIZE * canvasScale);
   textAlign(LEFT, BASELINE)
   let audio_toggle_icon = (audioEnabled) ? '🔈' : '🔇';
-  let audio_enable_tooltip = (!firstInteraction && !audioEnabled ? 'click to enable audio' : '');
-  text(audio_toggle_icon + audio_enable_tooltip, 20, window.innerHeight - 20);
+  text(audio_toggle_icon, 20, window.innerHeight - 20);
+
+  // draw tooltip if audio disabled
+  if (!firstInteraction && !audioEnabled) {
+    text('click for sound', cursorX + 15, cursorY + 15);
+  }
 
   // draw cursor dot 
-  fill(palette.dark)
+  fill(mouseIsPressed ? palette.primary : palette.dark);
   ellipse(cursorX, cursorY, 10, 10)
 
   // set flag to false once all draw updates have occured
@@ -440,7 +444,7 @@ class NavigationItem {
 
         let r = map(i, 0, MAX_TRAIL_LENGTH, this.pointRadius, this.soundRadius * 2)
 
-        let a = map(i, 0, MAX_TRAIL_LENGTH, .3, 0)
+        let a = map(i, 0, MAX_TRAIL_LENGTH, .5, 0)
 
         trailStrokeColor.setAlpha(a)
         stroke(trailStrokeColor);
