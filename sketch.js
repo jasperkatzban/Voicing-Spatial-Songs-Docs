@@ -457,18 +457,19 @@ class NavigationItem {
   }
 
   drawTrail() {
+    let trailScale = (this.type == 'subItem') ? .5 : 1;
     if (this.navigationState == 'foreground') {
       let trailColor = color(this.style.color)
       let trailStrokeColor = color(this.style.color)
 
       let frameIntervalToDrawTrail = Math.floor(MAX_TRAIL_LENGTH / MAX_TRAIL_PARTICLES);
-      for (let i = 0; i < MAX_TRAIL_LENGTH; i += frameIntervalToDrawTrail) {
+      for (let i = 0; i < MAX_TRAIL_LENGTH * trailScale; i += frameIntervalToDrawTrail) {
         let { x: trailX, y: trailY, t: trailT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset - i * .002)
         let { x: pathX, y: pathY, t: pathT } = this.path(this.pathScale, this.pathSpeed, this.pathOffset)
 
-        let r = map(i, 0, MAX_TRAIL_LENGTH, this.pointRadius, this.soundRadius * 2)
+        let r = map(i, 0, MAX_TRAIL_LENGTH * trailScale, this.pointRadius, this.soundRadius * 2 * trailScale)
 
-        let a = map(i, 0, MAX_TRAIL_LENGTH, .5, 0)
+        let a = map(i, 0, MAX_TRAIL_LENGTH * trailScale, .4, 0)
 
         trailStrokeColor.setAlpha(a)
         stroke(trailStrokeColor);
