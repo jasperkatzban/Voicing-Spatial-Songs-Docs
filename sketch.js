@@ -14,7 +14,7 @@ const TEXT_LEADING = 18;
 const MAX_TRAIL_LENGTH = 300;
 const MAX_TRAIL_PARTICLES = 15;
 const NAVIGATION_FADE_TIME = 1000;
-const NAVIGATION_HOLD_TIME = 500;
+const NAVIGATION_HOLD_TIME = 2000;
 
 let audioEnabled = false;
 let firstInteraction = false;
