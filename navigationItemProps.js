@@ -13,7 +13,7 @@ const navigationItemProps = [
         pathOffset: 0,
         subItems: [
             'LIFE CAMPUS TOP LEVEL',
-            'EARLIER ITERATIONS', // special case - cross linked items
+            'EARLIER ITERATIONS',
         ]
     },
     {
@@ -30,9 +30,9 @@ const navigationItemProps = [
         pathOffset: 0,
     },
     {
-        key: 'EARLIER ITERATIONS', // alias of EVENTS group
+        key: 'EARLIER ITERATIONS',
         title: 'Earlier Iterations',
-        type: 'subItem', // TODO: make a group
+        type: 'subGroup',
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
@@ -44,7 +44,6 @@ const navigationItemProps = [
             'WHAT SOUNDS DO',
             'THE LOBBY',
             'IMMERSIVE CONCERT SERIES',
-            'LIFE CAMPUS',
             `WHAT'S NEXT`,
             'SOUND & SCIENCE',
             'VEGA LAB',
@@ -103,8 +102,8 @@ const navigationItemProps = [
     {
         key: 'MULTI VOICING SPATIAL SONGS',
         title: 'Multi—Voicing Spatial Songs',
-        type: 'link',
-        link: 'https://www.researchcatalogue.net/view/3512750/3512955',
+        type: 'link', // change to subGroup once pages are done
+        link: 'https://www.researchcatalogue.net/view/3512750/3512955', // disable once pages are created
         style: navigationItemStyles.outcome,
         soundURL: 'sounds/universe-loop-5.mp3',
         pointRadius: 10,
@@ -113,6 +112,176 @@ const navigationItemProps = [
         pathScale: .24,
         pathSpeed: .00009,
         pathOffset: 0,
+        subItems: [
+            'About the Anthology',
+            'SØSTR',
+            'DU—o',
+            'Jo Verwohlt',
+            'Lil Lacy',
+            'Philip | Schneider',
+            'Quiver',
+            'Sitrekin',
+            'Sofie Birch',
+            'SØS Gunver Ryberg',
+            'SØSTR',
+            'XYZ Sound Collective',
+            'Yann Coppier']
+    },
+    {
+        key: 'About the Anthology',
+        title: 'About the Anthology',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ROSE_LEFT,
+        pathScale: .02,
+        pathSpeed: .0003,
+        pathOffset: 0,
+    },
+    {
+        key: 'SØSTR',
+        title: 'SØSTR',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .1,
+        pathSpeed: .0003,
+        pathOffset: 0,
+    },
+    {
+        key: 'DU—o',
+        title: 'DU—o',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .1,
+        pathSpeed: .0003,
+        pathOffset: Math.PI,
+    },
+    {
+        key: 'Jo Verwohlt',
+        title: 'Jo Verwohlt',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .2,
+        pathSpeed: .0001,
+        pathOffset: 0,
+    },
+    {
+        key: 'Lil Lacy',
+        title: 'Lil Lacy',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .2,
+        pathSpeed: .0001,
+        pathOffset: 2 * Math.PI / 3,
+    },
+    {
+        key: 'Philip | Schneider',
+        title: 'Philip | Schneider',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .2,
+        pathSpeed: .0001,
+        pathOffset: 4 * Math.PI / 3,
+    },
+    {
+        key: 'Quiver',
+        title: 'Quiver',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .3,
+        pathSpeed: .00005,
+        pathOffset: 0,
+    },
+    {
+        key: 'Sitrekin',
+        title: 'Sitrekin',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .3,
+        pathSpeed: .00005,
+        pathOffset: Math.PI / 3,
+    },
+    {
+        key: 'Sofie Birch',
+        title: 'Sofie Birch',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .3,
+        pathSpeed: .00005,
+        pathOffset: 2 * Math.PI / 3,
+    },
+    {
+        key: 'SØS Gunver Ryberg',
+        title: 'SØS Gunver Ryberg',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .3,
+        pathSpeed: .00005,
+        pathOffset: 3 * Math.PI / 3,
+    },
+    {
+        key: 'XYZ Sound Collective',
+        title: 'XYZ Sound Collective',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .3,
+        pathSpeed: .00005,
+        pathOffset: 4 * Math.PI / 3,
+    },
+    {
+        key: 'Yann Coppier',
+        title: 'Yann Coppier',
+        type: 'subItem',
+        link: '',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .3,
+        pathSpeed: .00005,
+        pathOffset: 5 * Math.PI / 3,
     },
     {
         key: 'SPATIAL STRATEGIES',
@@ -314,7 +483,6 @@ const navigationItemProps = [
         pathOffset: 9 * Math.PI / 5,
     },
 
-
     {
         key: 'EVENTS',
         title: 'Events',
@@ -327,10 +495,10 @@ const navigationItemProps = [
         pathSpeed: .0001,
         pathOffset: 3 * Math.PI / 5,
         subItems: [
+            'LIFE CAMPUS',
             'WHAT SOUNDS DO',
             'THE LOBBY',
             'IMMERSIVE CONCERT SERIES',
-            'LIFE CAMPUS',
             `WHAT'S NEXT`,
             'SOUND & SCIENCE',
             'VEGA LAB',
@@ -344,6 +512,20 @@ const navigationItemProps = [
         ],
     },
     {
+        key: 'LIFE CAMPUS',
+        title: 'LIFE Campus',
+        link: 'https://www.researchcatalogue.net/view/3512750/3619188',
+        type: 'subItem',
+        style: navigationItemStyles.outcome,
+        pointRadius: 10,
+        soundRadius: 100,
+        path: PATHS.ROSE_RIGHT,
+        pathScale: .02,
+        pathSpeed: .0003,
+        pathOffset: 0,
+    },
+
+    {
         key: 'WHAT SOUNDS DO',
         title: 'WHAT SOUNDS DO',
         link: 'https://www.researchcatalogue.net/view/3512750/3619188',
@@ -351,7 +533,10 @@ const navigationItemProps = [
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .1,
+        pathSpeed: .0001,
+        pathOffset: 0,
     },
     {
         key: 'THE LOBBY',
@@ -361,7 +546,10 @@ const navigationItemProps = [
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .1,
+        pathSpeed: .0001,
+        pathOffset: 2 * Math.PI / 3,
     },
     {
         key: 'IMMERSIVE CONCERT SERIES',
@@ -371,19 +559,13 @@ const navigationItemProps = [
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .1,
+        pathSpeed: .0001,
+        pathOffset: 4 * Math.PI / 3,
     },
 
-    {
-        key: 'LIFE CAMPUS',
-        title: 'LIFE Campus',
-        link: 'https://www.researchcatalogue.net/view/3512750/3619188',
-        type: 'subItem',
-        style: navigationItemStyles.outcome,
-        pointRadius: 10,
-        soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
-    },
+
     {
         key: `WHAT'S NEXT`,
         title: `What's Next`,
@@ -392,7 +574,10 @@ const navigationItemProps = [
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .22,
+        pathSpeed: .00003,
+        pathOffset: 0,
     },
     {
         key: 'SOUND & SCIENCE',
@@ -402,7 +587,10 @@ const navigationItemProps = [
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .22,
+        pathSpeed: .00003,
+        pathOffset: 2 * Math.PI / 5,
     },
     {
         key: 'VEGA LAB',
@@ -412,7 +600,10 @@ const navigationItemProps = [
         style: navigationItemStyles.intro,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .22,
+        pathSpeed: .00003,
+        pathOffset: 4 * Math.PI / 5,
     },
     {
         key: 'HOW TO STUDY SOUND',
@@ -422,7 +613,10 @@ const navigationItemProps = [
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .22,
+        pathSpeed: .00003,
+        pathOffset: 6 * Math.PI / 5,
     },
     {
         key: '3DAYSOFDESIGN',
@@ -432,8 +626,12 @@ const navigationItemProps = [
         style: navigationItemStyles.outcome,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_RIGHT,
+        pathScale: .22,
+        pathSpeed: .00003,
+        pathOffset: 8 * Math.PI / 5,
     },
+
     {
         key: 'VOICE STUDIES',
         title: 'Voice Studies',
@@ -442,7 +640,10 @@ const navigationItemProps = [
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .35,
+        pathSpeed: .00003,
+        pathOffset: 0,
     },
     {
         key: 'VOCAL IMAGINARIES',
@@ -452,7 +653,10 @@ const navigationItemProps = [
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .35,
+        pathSpeed: .00003,
+        pathOffset: 2 * Math.PI / 5,
     },
     {
         key: 'SPATIAL SOUND MEETUP',
@@ -462,7 +666,10 @@ const navigationItemProps = [
         style: navigationItemStyles.process,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .35,
+        pathSpeed: .00002,
+        pathOffset: 4 * Math.PI / 5,
     },
     {
         key: 'DKDM',
@@ -472,7 +679,10 @@ const navigationItemProps = [
         style: navigationItemStyles.thought,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .35,
+        pathSpeed: .00002,
+        pathOffset: 6 * Math.PI / 5,
     },
     {
         key: 'AMBISONIC NIGHTS #7',
@@ -482,10 +692,11 @@ const navigationItemProps = [
         style: navigationItemStyles.thought,
         pointRadius: 10,
         soundRadius: 100,
-        path: PATHS.ORBIT_RIGHT
+        path: PATHS.ORBIT_LEFT,
+        pathScale: .35,
+        pathSpeed: .00002,
+        pathOffset: 8 * Math.PI / 5,
     },
-
-
 
     {
         key: 'INTERFACE DESIGN',
