@@ -5,7 +5,6 @@ const navigationItems = new Map();
 let cursorX = window.innerHeight / 2;
 let cursorY = window.innerHeight / 2;
 let cursorOnCanvas = true;
-let cursorImage;
 let canvasScale = window.innerHeight / 800;
 
 const TEXT_SIZE = 15;
@@ -55,7 +54,6 @@ const PATHS = {
 }
 
 function preload() {
-  cursorImage = loadImage('images/cursor-corona.png')
 
   navigationItemProps.forEach(navigationItemProp => {
     if (navigationItemProp.soundURL) {
