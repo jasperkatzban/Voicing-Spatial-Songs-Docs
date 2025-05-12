@@ -73,9 +73,9 @@ const promptItemTexts = ["Will you incorporate height into your compositions and
 ]
 
 const descriptionText =
-    `Spatial Strategies\n\n
+    `Spatial Strategies\n
     These cards have emerged through a collective exploration of spatial sound.\n
     Music creators from various fields that contributed to the anthology: Multi - Voicing Spatial Songs — How do we work with sound in space? were asked to submit prompts to this deck of spatial strategies.\n
     Each artist provided a unique perspective, resulting in a diverse pool of approaches to spatial composition, listening, and thinking.\n
     Inspired by Brian Eno and Peter Schmidt's Oblique Strategies, which help composers overcome creative blocks, our deck invites reflection and exploration rather than offering direct solutions.\n
-    The prompts are designed to move beyond the “stereo - centric”, to encourage a deeper engagement with the possibilities of sound in space.`
+    The prompts are designed to move beyond the “stereo-centric”, to encourage a deeper engagement with the possibilities of sound in space.`
