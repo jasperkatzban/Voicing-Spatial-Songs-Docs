@@ -262,6 +262,7 @@ class NavigationItem {
     this.type = props.type;
 
     this.link = props.link;
+    this.openLinkInNewWindow = props.openLinkInNewWindow || false;
     this.sound = props.sound;
     this.image = props.image;
     this.alwaysShowImage = props.alwaysShowImage;
@@ -570,7 +571,7 @@ class LinkItem extends NavigationItem {
 
     await new Promise(() => {
       setTimeout(() => {
-        window.open(link, '_self');
+        window.open(link, this.openLinkInNewWindow ? '_blank' : '_self');
       }, NAVIGATION_FADE_TIME);
     });
   }
