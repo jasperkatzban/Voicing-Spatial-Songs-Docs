@@ -329,6 +329,8 @@ class Description {
 
     fill(palette.primary);
     textAlign(CENTER, CENTER);
+    rectMode(CENTER);
+    print(this.x, this.y);
     text(descriptionText, this.x, this.y, this.radius * 1.5, windowHeight);
   }
 
