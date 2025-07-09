@@ -167,7 +167,9 @@ function draw() {
     }
     textSize(TEXT_SIZE * canvasScale);
     textAlign(CENTER, BASELINE)
+    textFont("Roboto Mono");
     text('back', canvasCenter.x, window.innerHeight - 20);
+    textFont("Poppins Medium");
   }
 
   // draw audio toggle
