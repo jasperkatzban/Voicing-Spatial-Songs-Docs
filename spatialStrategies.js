@@ -1,4 +1,6 @@
 let canvas;
+let headingFont;
+let bodyFont;
 
 canvasCenter = { x: 0, y: 0 };
 
@@ -45,6 +47,9 @@ const PATHS = {
 }
 
 function preload() {
+  headingFont = loadFont('fonts/Poppins-Medium.ttf');
+  bodyFont = loadFont('fonts/RobotoMono-Medium.ttf');
+
   randomizeButtonIconImage = loadImage('images/icon-shuffle.png');
   descriptionButtonIconImage = loadImage('images/icon-question.png');
 }
@@ -56,7 +61,7 @@ function setup() {
   noCursor();
   imageMode(CENTER);
 
-  textFont("Roboto Mono");
+  textFont(bodyFont);
 
   promptItemTexts.forEach((promptItemText, i) => {
     let pos = generatePosition(i);

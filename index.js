@@ -1,4 +1,6 @@
 let canvas, canvasCenter;
+let headingFont;
+let bodyFont;
 
 const navigationItems = new Map();
 
@@ -57,6 +59,8 @@ const PATHS = {
 }
 
 function preload() {
+  headingFont = loadFont('fonts/Poppins-Medium.ttf');
+  bodyFont = loadFont('fonts/RobotoMono-Medium.ttf');
 
   navigationItemProps.forEach(navigationItemProp => {
     if (navigationItemProp.soundURL) {
@@ -91,7 +95,7 @@ function setup() {
   colorMode(RGB, 255, 255, 255, 1);
   noCursor();
 
-  textFont("Poppins Medium");
+  textFont(headingFont);
 
   fadeOverlayColor = color(palette.light);
 
@@ -167,9 +171,9 @@ function draw() {
     }
     textSize(TEXT_SIZE * canvasScale);
     textAlign(CENTER, BASELINE)
-    textFont("Roboto Mono");
+    textFont(bodyFont);
     text('back', canvasCenter.x, window.innerHeight - 20);
-    textFont("Poppins Medium");
+    textFont(headingFont);
   }
 
   // draw audio toggle
