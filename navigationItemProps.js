@@ -461,7 +461,7 @@ const navigationItemProps = [
 
     {
         key: 'SPATIAL STRATEGIES',
-        title: 'Spatial\nStrategies',
+        title: 'Spatial Strategies',
         type: 'link',
         link: 'https://www.researchcatalogue.net/view/3512750/3539951',
         style: navigationItemStyles.outcome,
