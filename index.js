@@ -402,14 +402,14 @@ class NavigationItem {
 
         // text
         fill(mainColor)
-        textAlign(LEFT, CENTER);
+        textAlign(LEFT, TOP);
         textSize(TEXT_SIZE * canvasScale);
-        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius + 5);
+        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius);
 
         // fade text to white on hover
         let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
         fill(255, 255, 255, a)
-        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius + 5);
+        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius);
 
       /* alternate radial text
       let textRadius = this.soundRadius / 2
@@ -597,7 +597,7 @@ class GroupItem extends NavigationItem {
 
     // if clicking outside the center area, exit the group
     let distFromCenter = dist(e.clientX, e.clientY, canvasCenter.x, canvasCenter.y);
-    let clickIsOutsideCenter = distFromCenter > window.innerHeight / 3;
+    let clickIsOutsideCenter = distFromCenter > 2 * window.innerHeight / 5;
 
     if (clickIsOutsideCenter && this.isActiveGroup) {
       handleGroupExitClick(this);
