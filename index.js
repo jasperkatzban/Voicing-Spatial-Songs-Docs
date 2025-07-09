@@ -284,7 +284,9 @@ function handleGroupExitClick(clickedGroupItem) {
 }
 
 function setUrl(activeGroup) {
-  document.location.href = activeGroup ? `/#${activeGroup.key}` : "/#";
+  document.location.href = activeGroup ? `/Voicing-Spatial-Songs-Docs/#${activeGroup.key}` : "/Voicing-Spatial-Songs-Docs/#";
+  // use if developing locally
+  // document.location.href = activeGroup ? `/#${activeGroup.key}` : "/#";
 }
 
 mouseClicked = e => {
