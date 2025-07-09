@@ -15,8 +15,6 @@ const R5 = .15 * R_SCALE;
 const R6 = .174 * R_SCALE;
 const R7 = .188 * R_SCALE; // TODO: adjust
 
-
-// Option of Radial Arrangement
 const promptItemTexts = ["Will you incorporate height into your compositions and take advantage of the vertical dimension?",
     "Simplicity? Multiplicity?",
     "Should the sound move, or should the audience move?",

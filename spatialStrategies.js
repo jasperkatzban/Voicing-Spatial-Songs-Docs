@@ -225,7 +225,6 @@ function pickRandomItem() {
   updateActiveItem(key)
 }
 
-
 class Button {
   constructor(props) {
     this.originX = props.x;
