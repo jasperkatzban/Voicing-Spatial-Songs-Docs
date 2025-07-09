@@ -22,9 +22,9 @@ let motionMillis = 0;
 let millisPaused = 0
 
 const TEXT_SIZE = 15;
-const TEXT_SIZE_SMALL = 12;
+const TEXT_SIZE_SMALL = 10;
 const TEXT_LEADING = 20;
-const TEXT_LEADING_SMALL = 16;
+const TEXT_LEADING_SMALL = 12;
 const TEXT_RESIZE_CHAR_LIMIT = 130;
 
 const PATHS = {
@@ -56,7 +56,7 @@ function setup() {
   noCursor();
   imageMode(CENTER);
 
-  textFont("Poppins Medium");
+  textFont("Roboto Mono");
 
   promptItemTexts.forEach((promptItemText, i) => {
     let pos = generatePosition(i);
@@ -178,7 +178,18 @@ function draw() {
   fill(palette.primary);
   textSize(TEXT_SIZE * canvasScale);
   textAlign(CENTER, BASELINE)
-  text("Click the circles above to view a strategy, or use the shuffle button to pick one randomly.", window.innerWidth / 2, window.innerHeight - 20);
+  text("Click the circles below to view a strategy, or use the shuffle button to pick one randomly.", window.innerWidth / 2, 56);
+
+  // draw back text
+  let d = dist(mouseX, mouseY, canvasCenter.x, window.innerHeight - 20);
+  if (d < 20) {
+    fill(255);
+  } else {
+    fill(palette.primary);
+  }
+  textSize(TEXT_SIZE * canvasScale);
+  textAlign(CENTER, BASELINE)
+  text('back', window.innerWidth / 2, window.innerHeight - 20);
 
   // draw cursor
   fill(palette.dark)
@@ -191,6 +202,12 @@ window.mouseClicked = e => {
       promptItem.clicked(e)
     });
     randomizeButton.clicked(e);
+
+    // check if back button clicked
+    let d = dist(mouseX, mouseY, canvasCenter.x, window.innerHeight - 20);
+    if (d < 20) {
+      window.open("https://www.researchcatalogue.net/view/3512750/3512754", '_self');
+    }
   }
   description.clicked(e);
   descriptionButton.clicked(e);
@@ -330,7 +347,11 @@ class Description {
     textAlign(CENTER, CENTER);
     rectMode(CENTER);
     print(this.x, this.y);
+    textSize(TEXT_SIZE * canvasScale);
+    textLeading(TEXT_LEADING * canvasScale);
     text(descriptionText, this.x, this.y, this.radius * 1.5, windowHeight);
+
+
   }
 
   updatePos() {
