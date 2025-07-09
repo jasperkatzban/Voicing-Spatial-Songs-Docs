@@ -23,6 +23,9 @@ let fadeOverlayColor;
 let isScreenFading = false;
 let currentFadeStartTime;
 
+let currentActiveGroup = undefined;
+let currentParentGroup = undefined;
+
 // TODO: make generate via unit circle; scale position to canvas afterwards
 const PATHS = {
   ORBIT_LEFT: (scale, speed, offset) => {
@@ -95,6 +98,15 @@ function setup() {
   navigationItems.forEach(navigationItem => {
     navigationItem.loop();
   })
+
+  let url = document.location.href;
+  let targetGroupKey = url.split("#")[1];
+  if (targetGroupKey) {
+    let targetGroup = navigationItems.get(targetGroupKey)
+    if (targetGroup) {
+      handleGroupEntryClick(targetGroup);
+    }
+  }
 }
 
 function windowResized() {
@@ -145,6 +157,19 @@ function draw() {
     navigationItem.draw()
   });
 
+  // draw back button if in a group
+  if (currentActiveGroup) {
+    let d = dist(mouseX, mouseY, canvasCenter.x, window.innerHeight - 20);
+    if (d < 20) {
+      fill(255);
+    } else {
+      fill(palette.primary);
+    }
+    textSize(TEXT_SIZE * canvasScale);
+    textAlign(CENTER, BASELINE)
+    text('back', canvasCenter.x, window.innerHeight - 20);
+  }
+
   // draw audio toggle
   fill(palette.dark);
   textSize(TEXT_SIZE * canvasScale);
@@ -190,6 +215,13 @@ function handleCursorExit() {
 }
 
 function handleGroupEntryClick(clickedGroupItem) {
+  // set the current parent to previously active group which was entered from
+  if (clickedGroupItem.type == 'subGroup') {
+    currentParentGroup = currentActiveGroup;
+  }
+
+  currentActiveGroup = clickedGroupItem;
+
   navigationItems.forEach(item => {
     if (clickedGroupItem.subItems.includes(item.key)) {
       item.moveToForeground();
@@ -201,7 +233,7 @@ function handleGroupEntryClick(clickedGroupItem) {
       item.hide();
     }
 
-    // make sure parent object gets hidden
+    // make sure group object gets hidden
     if (item.subItems && item.subItems.includes(clickedGroupItem.key)) {
       item.hide()
     }
@@ -215,6 +247,7 @@ function handleGroupEntryClick(clickedGroupItem) {
     }
   })
   clickedGroupItem.hide();
+  setUrl(currentActiveGroup);
 }
 
 function handleGroupExitClick(clickedGroupItem) {
@@ -235,6 +268,23 @@ function handleGroupExitClick(clickedGroupItem) {
       item.isActiveGroup = false;
     }
   })
+
+  if (clickedGroupItem.type == 'subGroup') {
+    if (currentParentGroup) {
+      handleGroupEntryClick(currentParentGroup);
+    }
+  }
+
+  if (clickedGroupItem.type == 'group') {
+    currentActiveGroup = undefined;
+    currentParentGroup = undefined;
+  }
+
+  setUrl(currentActiveGroup);
+}
+
+function setUrl(activeGroup) {
+  document.location.href = activeGroup ? `/#${activeGroup.key}` : "/#";
 }
 
 mouseClicked = e => {
@@ -410,48 +460,6 @@ class NavigationItem {
         let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
         fill(255, 255, 255, a)
         text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius);
-
-      /* alternate radial text
-      let textRadius = this.soundRadius / 2
-      let currentAngle = Math.PI - (textWidth(this.title) / 2) / textRadius;
- 
-      for (let i = -1; i < this.title.length; i++) {
-        let charWidth = textWidth(this.title.charAt(i));
-        let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
- 
-        push();
-        translate(this.x, this.y)
-        rotate(currentAngle);
-        translate(0, textRadius + TEXT_LEADING);
-        rotate(Math.PI)
-        text(this.title.charAt(i), 0, 0);
- 
-        fill(255, 255, 255, a)
-        text(this.title.charAt(i), 0, 0);
-        pop();
- 
-        currentAngle += (charWidth + nextCharWidth) / 2 / textRadius;
-      }
- 
-      currentAngle = (textWidth(this.title) / 2) / textRadius;
- 
-      for (let i = -1; i < this.title.length; i++) {
-        let charWidth = textWidth(this.title.charAt(i));
-        let nextCharWidth = textWidth(this.title.charAt(i + 1 || i));
- 
-        push();
-        translate(this.x, this.y)
-        rotate(currentAngle);
-        translate(0, textRadius + TEXT_SIZE * .42);
-        text(this.title.charAt(i), 0, 0);
- 
-        fill(255, 255, 255, a)
-        text(this.title.charAt(i), 0, 0);
-        pop();
- 
-        currentAngle -= (charWidth + nextCharWidth) / 2 / textRadius;
-      }
-    */
     }
   }
 
@@ -562,7 +570,6 @@ class LinkItem extends NavigationItem {
     }
   }
 
-  // TODO: Fade the rest of the scene during this time
   async openLinkAfterDelay(link) {
     if (!isScreenFading) {
       isScreenFading = true;
