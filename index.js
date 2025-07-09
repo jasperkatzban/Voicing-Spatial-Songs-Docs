@@ -176,12 +176,14 @@ function draw() {
     textFont(headingFont);
   }
 
-  // draw audio toggle
+  // draw audio toggle, switching to web-safe font to render emoji
   fill(palette.dark);
   textSize(TEXT_SIZE * canvasScale);
-  textAlign(LEFT, BASELINE)
+  textAlign(LEFT, BASELINE);
+  textFont('Arial');
   let audio_toggle_icon = (audioEnabled) ? '🔈' : '🔇';
   text(audio_toggle_icon, 20, window.innerHeight - 20);
+  textFont(headingFont)
 
   // draw tooltip if audio disabled
   if (!firstInteraction && !audioEnabled) {
@@ -458,15 +460,12 @@ class NavigationItem {
           ellipse(this.x, this.y, this.pointRadius * 1, this.pointRadius * 1);
         }
 
-        // text
-        fill(mainColor)
-        textAlign(LEFT, TOP);
-        textSize(TEXT_SIZE * canvasScale);
-        text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius);
-
         // fade text to white on hover
         let a = map(dScaled, this.soundRadius / 4, this.soundRadius * (2 / 5), 1, 0)
-        fill(255, 255, 255, a)
+        let fillColor = lerpColor(mainColor, color(255), a);
+        fill(fillColor)
+        textAlign(LEFT, TOP);
+        textSize(TEXT_SIZE * canvasScale);
         text(this.title, this.x + this.pointRadius + 5, this.y + this.pointRadius);
     }
   }
